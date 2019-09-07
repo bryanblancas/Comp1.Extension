@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ch&W</title>
+    <!--- JS --->
+    <script src="../js/jQuery/jquery-3.4.1.min.js"></script>
+    <script src="../js/bootstrap/bootstrap-4.3.1.min.js"></script>
+    <script src="../js/SweetAlert/sweetAlert.min.js"></script>
+    <!--- CSS --->
+    <link rel="stylesheet" href="../css/webpage.css">
+    <link rel="stylesheet" href="../css/signup.css">
+    <link rel="stylesheet" href="../css/estilos.css">
+    <link rel="stylesheet" href="../css/bootstrap/bootstrap-4.3.1.min.css">
+    <link rel="stylesheet" href="../css/sweetAlert.min.css">
+    <!---CryptoJs--->
+    <script src="../js/CryptoJs/CryptoJs.js"></script>
+    <script src="../js/CryptoJs/sha256.js"></script>
+    
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="webpage.html"><img src="../img/logo_Ch_W.svg" height="55px" width="55px" style="margin-right: 5%; margin-left:5%"><strong>Chaffing and Winnowing</strong></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link navElements" id="hrefSignin" href="signin.html">Iniciar Sesión</a>
+                </li>
+                <li class="nav-item"></li>
+                <a class="nav-link navElements active" id="hrefSignup" href="signup.html">Registrarse</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="col-md-4" style="margin:auto">
+        <div class="card mt-4">
+            <img class="card-img-top mt-2" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 25%; height: 25%; margin:auto">
+            <div class="card-body">
+                <div class="form-group">
+                    <div style="margin-bottom: 5%">
+                        <div class="card-text">
+                            <strong>Ingrese nombre de usuario:</strong>&nbsp;<img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalAyudaNombreUsuario" style="cursor: pointer">&nbsp;<span id="regexUsername"></span>
+                        </div>
+                        <input type="text" id="username" name="username" placeholder="Usuario123" class="form-control" value="" required>
+                    </div>
+                    <div style="margin-bottom: 5%">
+                        <div class="card-text">
+                            <strong>Ingrese email:</strong>&nbsp;<span id="regexEmail"></span>
+                        </div>
+                        <input type="email" id="email" name="email" placeholder="ejemplo@ejemplo.com" class="form-control" value="" required>
+                    </div>
+                    <div style="margin-bottom: 5%">
+                        <div class="card-text">
+                            <strong>Ingrese contraseña:</strong>&nbsp;<img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalAyudaPassword" style="cursor: pointer">&nbsp;<span id="regexPassword"></span>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="password" class="form-control" value="" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="basic-addon2"><img src="../img/eye.svg" id="imgEye" style="width: 20px; height: 20px;  cursor: pointer"/></span>
+                            </div>
+                        </div>
+                    </div>    
+                    <div style="margin-bottom: 10%">
+                        <div class="card-text">
+                            <strong>Repetir contraseña:</strong>&nbsp;<span id="matchPassword"></span>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control" id="passwordRepetir" name="passwordRepetir" placeholder="password" class="form-control" value="" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="basic-addon2"><img src="../img/eye.svg" id="imgEyeRepetir" style="width: 20px; height: 20px;  cursor: pointer"/></span>
+                            </div>
+                        </div>
+                    </div>                                
+                    <button id="btnSignup" type="button" class="btn btn-primary btn-block mt-4">Crear Usuario</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalAyudaNombreUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Nombre de Usuario</h5>
+            </div>
+            <div class="modal-body">
+                <div class="card border-0">
+                    <strong>El nombre de Usuario debe estar compuesto por: </strong>
+                    <div class="ml-5">
+                        <ul>
+                            <li>Una letra minuscula</li>
+                            <li>Una letra mayuscula</li>
+                            <li>Un numero</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalAyudaPassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Contraseña</h5>
+            </div>
+            <div class="modal-body">
+                <div class="card border-0">
+                    <strong>La contraseña debe estar compuesto por: </strong>
+                    <div class="ml-5">
+                        <ul>
+                            <li>Una letra minuscula</li>
+                            <li>Una letra mayuscula</li>
+                            <li>Un numero</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!--Script-->
+    <script src="../js/paginas/signup.js"></script>
+    <script type="../background.js"></script>
+</body>
+</html>
