@@ -3,7 +3,7 @@
 /***************************************/
 
 var usuarioLogin = {email: '', contrasenia: ''};
-var IP = 'https://10.100.64.202:3000/api/';
+var IP = 'https://192.168.0.4:3000/api/';
 
 /***************************************/
 /******* Final Variables globales ******/
