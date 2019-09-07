@@ -1,9 +1,3 @@
-/*
-	
-	Parchar los caracteres especiales
-
-*/
-
 console.log("Background");
 
 
