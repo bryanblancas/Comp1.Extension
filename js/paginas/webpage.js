@@ -4,7 +4,7 @@
 
 var usuarioLogin = {email: '', contrasenia: ''};
 var IP = 'https://10.100.76.106:3000/api/';
-
+/*te invito a echarle ganas*/
 /***************************************/
 /******* Final Variables globales ******/
 /***************************************/
