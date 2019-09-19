@@ -3,7 +3,7 @@
 /***************************************/
 
 var nuevoUsuario = {username: '', email: '', contrasenia: ''};
-var IP = 'https://10.100.76.106:3000/api/';
+var IP = 'https://192.168.0.4:3000/api/';
 
 /***************************************/
 /******* Final Variables globales ******/
@@ -37,7 +37,11 @@ $('#hrefSignup').click(function(){
 	});	
 });*/
 
-$('#btnSignup').click(function(){
+$(document).ready(function(){
+	$('#selectCiudad').select2();
+});
+
+$('#btnContinuar').click(function(){
 	if(comprobarUserName($('#username').val()) == false){
 		mostrarMensaje('Nombre de usuario incorrecto','El formato del nombre de usuario no es valido','error');
 	}
@@ -55,7 +59,29 @@ $('#btnSignup').click(function(){
 		nuevoUsuario.contrasenia = $('#password').val();
 		var hash = CryptoJS.SHA256($('#password').val()).toString();
 		nuevoUsuario.contrasenia = hash;
-		mostrarMensaje('¿Está seguro?','Se registrará usuario actual','warning');
+		mostrarMensaje('¿Desea continuar?','','warning');
+	}
+});
+
+$('#btnSignup').click(function(){
+	if(comprobarUserName($('#username').val()) == false){
+		mostrarMensajeConfirmacion('Nombre de usuario incorrecto','El formato del nombre de usuario no es valido','error');
+	}
+	else if(comprobarEmail($('#email').val()) == false){
+		mostrarMensajeConfirmacion('Email incorrecto','El formato de email no es valido','error');
+	}
+	else if(comprobarPassword($('#password').val()) == false){
+		mostrarMensajeConfirmacion('Contraseña incorrecta','El formato de la contraseña no es valido','error');
+	}
+	else if($('#password').val() != $('#passwordRepetir').val()){
+		mostrarMensajeConfirmacion('Contraseñas no validas','Las contraseñas introducidas no coinciden','error');
+	}else{
+		nuevoUsuario.username = $('#username').val();
+		nuevoUsuario.email = $('#email').val();
+		nuevoUsuario.contrasenia = $('#password').val();
+		var hash = CryptoJS.SHA256($('#password').val()).toString();
+		nuevoUsuario.contrasenia = hash;
+		mostrarMensajeConfirmacion('¿Desea continuar?','Se registrará usuario actual','warning');
 	}
 });
 
@@ -227,6 +253,35 @@ function comprobarPassword(password) {
 }
 
 function mostrarMensaje(titulo='', mensaje='', tipo='') {
+	if(tipo == 'warning'){
+		Swal.fire({
+			title: titulo,
+			text: mensaje,
+			type: tipo,
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			cancelButtonText: 'Cancelar',
+			confirmButtonText: 'Si, continuar!'
+		  }).then((result) => {
+			if (result.value) {
+				//$('#usuario').removeAttr('class');
+				$('#usuario').attr('class','tab-pane fade');
+				$('#certificado').attr('class','tab-pane fade show active');
+				//confirmarUsuario();
+			}
+		});
+	}else{
+		Swal.fire({
+			title: titulo,
+			text: mensaje,
+			type: tipo,
+			confirmButtonText: 'Aceptar'
+		});
+	}
+}
+
+function mostrarMensajeConfirmacion(titulo='', mensaje='', tipo='') {
 	if(tipo == 'warning'){
 		Swal.fire({
 			title: titulo,

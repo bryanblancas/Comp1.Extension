@@ -3,7 +3,7 @@
 /***************************************/
 
 var usuarioLogin = {email: '', contrasenia: ''};
-var IP = 'https://10.100.76.106:3000/api/';
+var IP = 'https://192.168.0.4:3000/api/';
 /*te invito a echarle ganas*/
 /***************************************/
 /******* Final Variables globales ******/
@@ -57,7 +57,7 @@ $('#login').click(function(){
 
 		$.ajax({
 			type: 'POST',
-			url: IP+'obtenerCertificado',
+			url: IP+'obtenerCertificadoUsuario',
 			dataType: 'json',
 			async: false,
 			data: {

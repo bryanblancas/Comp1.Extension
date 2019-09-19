@@ -9,12 +9,14 @@
     <script src="../js/jQuery/jquery-3.4.1.min.js"></script>
     <script src="../js/bootstrap/bootstrap-4.3.1.min.js"></script>
     <script src="../js/SweetAlert/sweetAlert.min.js"></script>
+    <script src="../js/Select2/select2.js"></script>
     <!--- CSS --->
     <link rel="stylesheet" href="../css/webpage.css">
     <link rel="stylesheet" href="../css/signup.css">
     <link rel="stylesheet" href="../css/estilos.css">
     <link rel="stylesheet" href="../css/bootstrap/bootstrap-4.3.1.min.css">
     <link rel="stylesheet" href="../css/sweetAlert.min.css">
+    <link rel="stylesheet" href="../css/select2.css">
     <!---CryptoJs--->
     <script src="../js/CryptoJs/CryptoJs.js"></script>
     <script src="../js/CryptoJs/sha256.js"></script>
@@ -37,46 +39,129 @@
             </ul>
         </div>
     </nav>
-    <div class="col-md-4" style="margin:auto">
-        <div class="card mt-4">
-            <img class="card-img-top mt-2" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 25%; height: 25%; margin:auto">
-            <div class="card-body">
-                <div class="form-group">
-                    <div style="margin-bottom: 5%">
-                        <div class="card-text">
-                            <strong>Ingrese nombre de usuario:</strong>&nbsp;<img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalAyudaNombreUsuario" style="cursor: pointer">&nbsp;<span id="regexUsername"></span>
-                        </div>
-                        <input type="text" id="username" name="username" placeholder="Usuario123" class="form-control" value="" required>
-                    </div>
-                    <div style="margin-bottom: 5%">
-                        <div class="card-text">
-                            <strong>Ingrese email:</strong>&nbsp;<span id="regexEmail"></span>
-                        </div>
-                        <input type="email" id="email" name="email" placeholder="ejemplo@ejemplo.com" class="form-control" value="" required>
-                    </div>
-                    <div style="margin-bottom: 5%">
-                        <div class="card-text">
-                            <strong>Ingrese contraseña:</strong>&nbsp;<img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalAyudaPassword" style="cursor: pointer">&nbsp;<span id="regexPassword"></span>
-                        </div>
-                        <div class="input-group mb-3">
-                            <input type="password" class="form-control" id="password" name="password" placeholder="password" class="form-control" value="" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text" id="basic-addon2"><img src="../img/eye.svg" id="imgEye" style="width: 20px; height: 20px;  cursor: pointer"/></span>
+    <div class="col-md-12">
+        <!-- Nav tabs -->
+        <ul id="tabs" class="nav nav-tabs" role="tablist" style="display:none">
+            <li role="presentation" class="active"><a href="#usuario" role="tab" data-toggle="tab">Datos de Usuario</a></li>
+            &nbsp&nbsp&nbsp
+            <li role="presentation"><a href="#certificado" role="tab" data-toggle="tab">Datos de Certificado</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade show active" id="usuario">
+                <div class="col-md-4" style="margin:auto">
+                    <div class="card mt-4">
+                        <img class="card-img-top mt-2" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 25%; height: 25%; margin:auto">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div style="margin-bottom: 5%">
+                                    <div class="card-text">
+                                        <strong>Ingrese nombre de usuario:</strong>&nbsp;<img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalAyudaNombreUsuario" style="cursor: pointer">&nbsp;<span id="regexUsername"></span>
+                                    </div>
+                                    <input type="text" id="username" name="username" placeholder="Usuario123" class="form-control" value="" required>
+                                </div>
+                                <div style="margin-bottom: 5%">
+                                    <div class="card-text">
+                                        <strong>Ingrese email:</strong>&nbsp;<span id="regexEmail"></span>
+                                    </div>
+                                    <input type="email" id="email" name="email" placeholder="ejemplo@ejemplo.com" class="form-control" value="" required>
+                                </div>
+                                <div style="margin-bottom: 5%">
+                                    <div class="card-text">
+                                        <strong>Ingrese contraseña:</strong>&nbsp;<img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalAyudaPassword" style="cursor: pointer">&nbsp;<span id="regexPassword"></span>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="password" class="form-control" value="" required>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="basic-addon2"><img src="../img/eye.svg" id="imgEye" style="width: 20px; height: 20px;  cursor: pointer"/></span>
+                                        </div>
+                                    </div>
+                                </div>    
+                                <div style="margin-bottom: 10%">
+                                    <div class="card-text">
+                                        <strong>Repetir contraseña:</strong>&nbsp;<span id="matchPassword"></span>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="password" class="form-control" id="passwordRepetir" name="passwordRepetir" placeholder="password" class="form-control" value="" required>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="basic-addon2"><img src="../img/eye.svg" id="imgEyeRepetir" style="width: 20px; height: 20px;  cursor: pointer"/></span>
+                                        </div>
+                                    </div>
+                                </div>                                
+                                <button id="btnContinuar" type="button" class="btn btn-primary btn-block mt-4">Continuar</button>
                             </div>
                         </div>
-                    </div>    
-                    <div style="margin-bottom: 10%">
-                        <div class="card-text">
-                            <strong>Repetir contraseña:</strong>&nbsp;<span id="matchPassword"></span>
-                        </div>
-                        <div class="input-group mb-3">
-                            <input type="password" class="form-control" id="passwordRepetir" name="passwordRepetir" placeholder="password" class="form-control" value="" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text" id="basic-addon2"><img src="../img/eye.svg" id="imgEyeRepetir" style="width: 20px; height: 20px;  cursor: pointer"/></span>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="certificado">
+                <div class="col-md-4" style="margin:auto">
+                    <div class="card mt-4">
+                        <img class="card-img-top mt-2" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 25%; height: 25%; margin:auto">
+                        <div class="card-body">
+                            <div style="text-align: center"><strong>La siguiente información nos ayudará a la creación de su certificado</strong></div>
+                            <div class="form-group">
+                                <div style="margin-bottom: 5%">
+                                    <div class="card-text">
+                                        <strong>Nombre de la Ciudad:</strong><!---&nbsp;<img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalAyudaNombreUsuario" style="cursor: pointer">--->
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <select id="selectCiudad" style="width: 100%">
+                                                <option value="MX">Mexico</option>
+                                                <option value="TW">Taiwan</option>
+                                                <option value="US">Estados Unidos</option>
+                                                <option value="CA">Canada</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5%">
+                                    <div class="card-text">
+                                        <strong>Nombre de su Estado o Provincia:</strong>
+                                    </div>
+                                    <input type="estado" id="estado" name="estado" placeholder="Ciudad de Mexico" class="form-control" value="" required>
+                                </div>
+                                <div style="margin-bottom: 5%">
+                                    <div class="card-text">
+                                        <strong>Nombre de su Localidad:</strong>
+                                    </div>
+                                    <input type="localidad" id="localidad" name="localidad" placeholder="Gustavo A.Madero" class="form-control" value="" required>
+                                </div>
+                                <div style="margin-bottom: 5%">
+                                    <div class="card-text">
+                                        <strong>Codigo postal:</strong>
+                                    </div>
+                                    <input type="codigoPostal" id="codigoPostal" name="codigoPostal" placeholder="07600" class="form-control" value="" required>
+                                </div>  
+                                <div style="margin-bottom: 5%">
+                                    <div class="card-text">
+                                        <strong>Direccion:</strong>
+                                    </div>
+                                    <input type="direccion" id="direccion" name="direcicon" placeholder="Calle 4 No.12 Col.Progreso Nacional" class="form-control" value="" required>
+                                </div>
+                                <div style="margin-bottom: 5%">
+                                    <div class="card-text">
+                                        <strong>Nombre de su organizacion:</strong>
+                                    </div>
+                                    <input type="organizacion" id="organizacion" name="organizacion" placeholder="Instituto Politecnico Nacional" class="form-control" value="" required>
+                                </div>
+                                <div style="margin-bottom: 5%">
+                                    <div class="card-text">
+                                        <strong>Nombre de su organizacion abreviado:</strong>
+                                    </div>
+                                    <input type="organizacionAbrev" id="organizacionAbrev" name="organizacionAbrev" placeholder="IPN" class="form-control" value="" required>
+                                </div>
+                                <div style="margin-bottom: 5%">
+                                    <div class="card-text">
+                                        <strong>Nombre de su dominio:</strong>
+                                    </div>
+                                    <input type="dominio" id="dominio" name="dominio" placeholder="example.com" class="form-control" value="" required>
+                                </div>
+                                <button id="btnSignup" type="button" class="btn btn-primary btn-block mt-4">Crear Usuario</button>
                             </div>
                         </div>
-                    </div>                                
-                    <button id="btnSignup" type="button" class="btn btn-primary btn-block mt-4">Crear Usuario</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,6 +203,32 @@
             <div class="modal-body">
                 <div class="card border-0">
                     <strong>La contraseña debe estar compuesto por: </strong>
+                    <div class="ml-5">
+                        <ul>
+                            <li>Una letra minuscula</li>
+                            <li>Una letra mayuscula</li>
+                            <li>Un numero</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalDatosCertificados" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Contraseña</h5>
+            </div>
+            <div class="modal-body">
+                <div class="card border-0">
+                    <strong>Por favor ingrese los siguientes datos: </strong>
                     <div class="ml-5">
                         <ul>
                             <li>Una letra minuscula</li>
