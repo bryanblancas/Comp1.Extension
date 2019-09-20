@@ -66,6 +66,7 @@ $('#btnContinuar').click(function(){
 $('#btnRegresar').click(function(){
 	$('#usuario').attr('class','tab-pane fade show active');
 	$('#certificado').attr('class','tab-pane fade');
+	$('#imgMostrarOpAvanzadasArriba').click();
 });
 
 $('#btnSignup').click(function(){
