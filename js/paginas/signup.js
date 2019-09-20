@@ -63,6 +63,11 @@ $('#btnContinuar').click(function(){
 	}
 });
 
+$('#btnRegresar').click(function(){
+	$('#usuario').attr('class','tab-pane fade show active');
+	$('#certificado').attr('class','tab-pane fade');
+});
+
 $('#btnSignup').click(function(){
 	if(comprobarUserName($('#username').val()) == false){
 		mostrarMensajeConfirmacion('Nombre de usuario incorrecto','El formato del nombre de usuario no es valido','error');
@@ -265,10 +270,8 @@ function mostrarMensaje(titulo='', mensaje='', tipo='') {
 			confirmButtonText: 'Si, continuar!'
 		  }).then((result) => {
 			if (result.value) {
-				//$('#usuario').removeAttr('class');
 				$('#usuario').attr('class','tab-pane fade');
 				$('#certificado').attr('class','tab-pane fade show active');
-				//confirmarUsuario();
 			}
 		});
 	}else{
@@ -307,6 +310,17 @@ function mostrarMensajeConfirmacion(titulo='', mensaje='', tipo='') {
 	}
 }
 
+$('#imgMostrarOpAvanzadasAbajo').click(function(){
+	$('#OpcionesAvanzadas').removeAttr('style');
+	$('#imgMostrarOpAvanzadasArriba').attr('class','col-md-1');
+	$('#imgMostrarOpAvanzadasAbajo').attr('class','d-md-none');
+});
+
+$('#imgMostrarOpAvanzadasArriba').click(function(){
+	$('#OpcionesAvanzadas').attr('style','display:none');
+	$('#imgMostrarOpAvanzadasAbajo').attr('class','col-md-1');
+	$('#imgMostrarOpAvanzadasArriba').attr('class','d-md-none');
+});
 
 /************* Final ****************/
 /********** Signup html *************/

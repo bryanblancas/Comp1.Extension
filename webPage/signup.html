@@ -140,25 +140,48 @@
                                     </div>
                                     <input type="direccion" id="direccion" name="direcicon" placeholder="Calle 4 No.12 Col.Progreso Nacional" class="form-control" value="" required>
                                 </div>
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Nombre de su organizacion:</strong>
+                                <hr/>
+                                <div class="card-text">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            Opcional
+                                        </div>
+                                        <div class="col-md-1" id="imgMostrarOpAvanzadasAbajo">
+                                            <img src="../img/flechaAbajo.png" alt="Opciones avanzadas" title="Opciones avanzadas" width="15px" height="15px" style="cursor: pointer">
+                                        </div>
+                                        <div class="col-md-1 d-md-none" id="imgMostrarOpAvanzadasArriba">
+                                            <img src="../img/flechaArriba.png" alt="Opciones avanzadas" title="Opciones avanzadas" width="15px" height="15px" style="cursor: pointer">
+                                        </div>
                                     </div>
-                                    <input type="organizacion" id="organizacion" name="organizacion" placeholder="Instituto Politecnico Nacional" class="form-control" value="" required>
                                 </div>
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Nombre de su organizacion abreviado:</strong>
+                                <div id="OpcionesAvanzadas" style="display:none">
+                                    <div style="margin-bottom: 5%">
+                                        <div class="card-text">
+                                            <strong>Nombre de su organizacion:</strong>
+                                        </div>
+                                        <input type="organizacion" id="organizacion" name="organizacion" placeholder="Instituto Politécnico Nacional" class="form-control" value="" required>
                                     </div>
-                                    <input type="organizacionAbrev" id="organizacionAbrev" name="organizacionAbrev" placeholder="IPN" class="form-control" value="" required>
-                                </div>
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Nombre de su dominio:</strong>
+                                    <div style="margin-bottom: 5%">
+                                        <div class="card-text">
+                                            <strong>Nombre de su organizacion abreviado:</strong>
+                                        </div>
+                                        <input type="organizacionAbrev" id="organizacionAbrev" name="organizacionAbrev" placeholder="IPN" class="form-control" value="" required>
                                     </div>
-                                    <input type="dominio" id="dominio" name="dominio" placeholder="example.com" class="form-control" value="" required>
+                                    <div style="margin-bottom: 5%">
+                                        <div class="card-text">
+                                            <strong>Nombre de su dominio:</strong>
+                                        </div>
+                                        <input type="dominio" id="dominio" name="dominio" placeholder="ejemplo.com" class="form-control" value="" required>
+                                    </div>
                                 </div>
-                                <button id="btnSignup" type="button" class="btn btn-primary btn-block mt-4">Crear Usuario</button>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <button id="btnRegresar" type="button" class="btn btn-secondary btn-block mt-4">Atrás</button>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <button id="btnSignup" type="button" class="btn btn-primary btn-block mt-4">Crear Usuario</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
