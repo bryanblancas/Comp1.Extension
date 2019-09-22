@@ -21,6 +21,10 @@ $('#hrefSignup').click(function(){
 	window.open('../../webPage/signup.html',"_self");
 });
 
+$('#hrefWebPage').click(function(){
+	window.open('../../webPage/webpage.html',"_self");
+});
+
 /***************************************/
 /****** Final Funciones de Header ******/
 /***************************************/
@@ -31,13 +35,29 @@ $('#hrefSignup').click(function(){
 /********** Login html *************/
 /************************************/
 
-/*$(document).ready(function() {
+$(document).ready(function(){
 	chrome.storage.local.get(['cert'],function(result){
 		if(result.cert != null){
-			window.close();
+			//Existe un certificado
+			$('#hrefSignup').attr('style','display:none');
+			$('#hrefSignin').attr('style','display:none');
+			$('#revocarCertificadoDiv').attr('style','display:none');
+			$('#login').attr('disabled','disabled');
+			$('#email').attr('disabled','disabled');
+			$('#password').attr('disabled','disabled');
+		}else{
+			//No existe un certificado
+			$('#hrefSignup').attr('style','cursor:pointer');
+			$('#hrefSignin').attr('style','cursor:pointer');
 		}
 	});	
-});*/
+});
+
+function quitarEncabezadosCertificado(certificado) {
+	crt = certificado.split('-----BEGIN CERTIFICATE-----')[1];
+	crt = crt.split('-----END CERTIFICATE-----')[0];
+	return crt;
+}
 
 $('#login').click(function(){	
 	if(comprobarEmail($('#email').val()) == false){
@@ -72,7 +92,9 @@ $('#login').click(function(){
 					$('#imgChW').attr('class','card-img-top mt-2');
 					mostrarMensaje('Usuario no valido','','error');
 				}else{
-					chrome.storage.local.set({cert: data.certificado});
+					crt = quitarEncabezadosCertificado(data.certificado);
+					/*Se guarda en Storage*/
+					chrome.storage.local.set({cert: crt});
 					chrome.storage.local.get(['cert'],function(result){
 						if(result.cert != null){
 							$('#imgChW').attr('class','card-img-top mt-2');
@@ -229,7 +251,15 @@ function comprobarPassword(password) {
 }
 
 function mostrarMensaje(titulo='', mensaje='', tipo='') {
-	if(tipo == 'warning'){
+	if(tipo == 'error'){
+		Swal.fire({
+			title: titulo,
+			text: mensaje,
+			type: tipo,
+			confirmButtonColor: '#3085d6',
+			confirmButtonText: 'Aceptar'
+		});
+	}else if(tipo == 'warning'){
 		Swal.fire({
 			title: titulo,
 			text: mensaje,
@@ -241,15 +271,20 @@ function mostrarMensaje(titulo='', mensaje='', tipo='') {
 			confirmButtonText: 'Si, continuar!'
 		  }).then((result) => {
 			if (result.value) {
+				//window.close();
 				confirmarUsuario();
 			}
 		});
-	}else{
+	}else if(tipo == 'success'){
 		Swal.fire({
 			title: titulo,
 			text: mensaje,
 			type: tipo,
 			confirmButtonText: 'Aceptar'
+		}).then((result) => {
+			if(result.value){
+				$('#hrefWebPage').click();
+			}
 		});
 	}
 }

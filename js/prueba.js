@@ -59,9 +59,11 @@ $('#btnIniciarSesion').click(function(){
 
 $('#btnCerrarSesion').click(function(){
 	chrome.storage.local.set({cert: null});
+
 	$('#btnCerrarSesion').attr('style','display:none');
 	$('#btnIniciarSesion').attr('style','display:inline-block');
 	//$('#btnIniciarSesion').click();	
+	
 	Swal.fire({
 		text: 'Se ha cerrado sesión exitosamente',
 		width: 200,

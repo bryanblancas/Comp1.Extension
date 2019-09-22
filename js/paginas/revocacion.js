@@ -38,6 +38,23 @@ $('#hrefSignup').click(function(){
 	});	
 });*/
 
+$(document).ready(function(){
+	chrome.storage.local.get(['cert'],function(result){
+		if(result.cert != null){
+			//Existe un certificado
+			$('#hrefSignup').attr('style','display:none');
+			$('#hrefSignin').attr('style','display:none');
+			$('#btnRevocar').attr('disabled','disabled');
+			$('#email').attr('disabled','disabled');
+			$('#password').attr('disabled','disabled');
+		}else{
+			//No existe un certificado
+			$('#hrefSignup').attr('style','cursor:pointer');
+			$('#hrefSignin').attr('style','cursor:pointer');
+		}
+	});	
+});
+
 $('#btnRevocar').click(function(){	
 	if(comprobarEmail($('#email').val()) == false){
 		mostrarMensaje('Email incorrecto','El formato de email no es valido','error');

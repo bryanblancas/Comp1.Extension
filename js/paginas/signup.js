@@ -2,7 +2,19 @@
 /****** Inicio Variables globales ******/
 /***************************************/
 
-var nuevoUsuario = {username: '', email: '', contrasenia: ''};
+var nuevoUsuario = {
+	username: '', 
+	email: '', 
+	contrasenia: '',
+	ciudad: '',
+	estado: '',
+	localidad: '',
+	codigoPostal: '',
+	direccion: '',
+	organizacionNombre: 'Indefinido',
+	organizacionAbreviado: 'Indefinido',
+	dominio: 'indefinido.com'
+};
 var IP = 'https://192.168.0.4:3000/api/';
 
 /***************************************/
@@ -39,6 +51,27 @@ $('#hrefSignup').click(function(){
 
 $(document).ready(function(){
 	$('#selectCiudad').select2();
+	$('#selectCiudad option[value=0]').prop('disabled',true);
+	$('#selectCiudad').val(0);
+	$('#selectCiudad').trigger('change.select2');
+
+	chrome.storage.local.get(['cert'],function(result){
+		if(result.cert != null){
+			//Existe un certificado
+			$('#hrefSignup').attr('style','display:none');
+			$('#hrefSignin').attr('style','display:none');
+			$('#email').attr('disabled','disabled');
+			$('#password').attr('disabled','disabled');
+			$('#username').attr('disabled','disabled');
+			$('#passwordRepetir').attr('disabled','disabled');
+			$('#btnContinuar').attr('disabled','disabled');
+		}else{
+			//No existe un certificado
+			$('#hrefSignup').attr('style','cursor:pointer');
+			$('#hrefSignin').attr('style','cursor:pointer');
+		}
+	});	
+	
 });
 
 $('#btnContinuar').click(function(){
@@ -54,11 +87,6 @@ $('#btnContinuar').click(function(){
 	else if($('#password').val() != $('#passwordRepetir').val()){
 		mostrarMensaje('Contraseñas no validas','Las contraseñas introducidas no coinciden','error');
 	}else{
-		nuevoUsuario.username = $('#username').val();
-		nuevoUsuario.email = $('#email').val();
-		nuevoUsuario.contrasenia = $('#password').val();
-		var hash = CryptoJS.SHA256($('#password').val()).toString();
-		nuevoUsuario.contrasenia = hash;
 		mostrarMensaje('¿Desea continuar?','','warning');
 	}
 });
@@ -70,23 +98,40 @@ $('#btnRegresar').click(function(){
 });
 
 $('#btnSignup').click(function(){
-	if(comprobarUserName($('#username').val()) == false){
-		mostrarMensajeConfirmacion('Nombre de usuario incorrecto','El formato del nombre de usuario no es valido','error');
-	}
-	else if(comprobarEmail($('#email').val()) == false){
-		mostrarMensajeConfirmacion('Email incorrecto','El formato de email no es valido','error');
-	}
-	else if(comprobarPassword($('#password').val()) == false){
-		mostrarMensajeConfirmacion('Contraseña incorrecta','El formato de la contraseña no es valido','error');
-	}
-	else if($('#password').val() != $('#passwordRepetir').val()){
-		mostrarMensajeConfirmacion('Contraseñas no validas','Las contraseñas introducidas no coinciden','error');
+	console.log($('#selectCiudad').val());
+	if($('#selectCiudad').val() == null){
+		mostrarMensaje('','Porfavor seleccione una ciudad','error');
+	}else if($('#estado').val().length == 0){
+		mostrarMensaje('','Porfavor ingrese un estado','error');
+	}else if($('#localidad').val().length == 0){
+		mostrarMensaje('','Porfavor ingrese una localidad','error');
+	}else if($('#codigoPostal').val().length == 0){
+		mostrarMensaje('','Porfavor ingrese un código postal','error');
+	}else if($('#direccion').val().length == 0){
+		mostrarMensaje('','Porfavor ingrese una dirección','error');
 	}else{
 		nuevoUsuario.username = $('#username').val();
 		nuevoUsuario.email = $('#email').val();
 		nuevoUsuario.contrasenia = $('#password').val();
 		var hash = CryptoJS.SHA256($('#password').val()).toString();
 		nuevoUsuario.contrasenia = hash;
+
+		nuevoUsuario.ciudad = $('#selectCiudad').val();
+		nuevoUsuario.estado = $('#estado').val();
+		nuevoUsuario.localidad = $('#localidad').val();
+		nuevoUsuario.codigoPostal = $('#codigoPostal').val();
+		nuevoUsuario.direccion = $('#direccion').val();
+
+		if($('#organizacion').val().length != 0){
+			nuevoUsuario.organizacionNombre = $('#organizacion').val();
+		}
+		if($('#organizacionAbrev').val().length != 0){
+			nuevoUsuario.organizacionAbreviado = $('#organizacionAbrev').val();
+		}
+		if($('#dominio').val().length != 0){
+			nuevoUsuario.dominio = $('#dominio').val();
+		}
+
 		mostrarMensajeConfirmacion('¿Desea continuar?','Se registrará usuario actual','warning');
 	}
 });
@@ -100,7 +145,15 @@ function confirmarUsuario() {
 		data: {
 			'username': nuevoUsuario.username,
 			'email': nuevoUsuario.email,
-			'password': nuevoUsuario.contrasenia
+			'password': nuevoUsuario.contrasenia,
+			'ciudad': nuevoUsuario.ciudad,
+			'estado': nuevoUsuario.estado,
+			'localidad': nuevoUsuario.localidad,
+			'codigoPostal': nuevoUsuario.codigoPostal,
+			'direccion': nuevoUsuario.direccion,
+			'organizacionNombre': nuevoUsuario.organizacionNombre,
+			'organizacionAbreviado': nuevoUsuario.organizacionAbreviado,
+			'dominio': nuevoUsuario.dominio
 		},
 		beforeSend: function(){
 			$('#imgChW').attr('class','card-img-top mt-2 rotate');

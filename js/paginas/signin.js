@@ -22,6 +22,29 @@ var IP = 'https://192.168.0.4:3000/api/';
 	});	
 });*/
 
+$(document).ready(function(){
+	chrome.storage.local.get(['cert'],function(result){
+		if(result.cert != null){
+			//Existe un certificado
+			$('#hrefSignup').attr('style','display:none');
+			$('#hrefSignin').attr('style','display:none');
+			$('#btnSignin').attr('disabled','disabled');
+			$('#email').attr('disabled','disabled');
+			$('#password').attr('disabled','disabled');
+		}else{
+			//No existe un certificado
+			$('#hrefSignup').attr('style','cursor:pointer');
+			$('#hrefSignin').attr('style','cursor:pointer');
+		}
+	});	
+});
+
+function quitarEncabezadosCertificado(certificado) {
+	crt = certificado.split('-----BEGIN CERTIFICATE-----')[1];
+	crt = crt.split('-----END CERTIFICATE-----')[0];
+	return crt;
+}
+
 $('#btnSignin').click(function(){	
 	if(comprobarEmail($('#email').val()) == false){
 		mostrarMensaje('Email incorrecto','El formato de email no es valido','error');
@@ -47,13 +70,13 @@ $('#btnSignin').click(function(){
 				$('#imgChW').attr('class','card-img-top mt-2 rotate');
 			},
 		}).done(function(data){
-			console.log(data);
 			if(data.status == 0){
 				$('#imgChW').attr('class','card-img-top mt-2');
 				mostrarMensaje('Usuario no valido','','error');
 			}else{
+				crt = quitarEncabezadosCertificado(data.certificado);
 				/*Se guarda en Storage*/
-				chrome.storage.local.set({cert: data.certificado});
+				chrome.storage.local.set({cert: crt});
 				chrome.storage.local.get(['cert'],function(result){
 					if(result.cert != null){
 						console.log(result.cert);
