@@ -39,16 +39,11 @@ $(document).ready(function(){
 	chrome.storage.local.get(['cert'],function(result){
 		if(result.cert != null){
 			//Existe un certificado
-			$('#hrefSignup').attr('style','display:none');
-			$('#hrefSignin').attr('style','display:none');
-			$('#revocarCertificadoDiv').attr('style','display:none');
-			$('#login').attr('disabled','disabled');
-			$('#email').attr('disabled','disabled');
-			$('#password').attr('disabled','disabled');
+			$('#hrefSignup,#hrefSignin,#revocarCertificadoDiv').attr('style','display:none');
+			$('#login,#email,#password').attr('disabled','disabled');
 		}else{
 			//No existe un certificado
-			$('#hrefSignup').attr('style','cursor:pointer');
-			$('#hrefSignin').attr('style','cursor:pointer');
+			$('#hrefSignup,#hrefSignin').attr('style','cursor:pointer');
 		}
 	});	
 });
@@ -61,10 +56,10 @@ function quitarEncabezadosCertificado(certificado) {
 
 $('#login').click(function(){	
 	if(comprobarEmail($('#email').val()) == false){
-		mostrarMensaje('Email incorrecto','El formato de email no es valido','error');
+		mostrarMensajeError('Email incorrecto','El formato de email no es valido');
 	}
 	else if(comprobarPassword($('#password').val()) == false){
-		mostrarMensaje('Contraseña incorrecta','El formato de la contraseña no es valido','error');
+		mostrarMensajeError('Contraseña incorrecta','El formato de la contraseña no es valido');
 	}
 	else{
 		usuarioLogin.email = $('#email').val();
@@ -90,7 +85,7 @@ $('#login').click(function(){
 			success: function(data){
 				if(data.status == 0){
 					$('#imgChW').attr('class','card-img-top mt-2');
-					mostrarMensaje('Usuario no valido','','error');
+					mostrarMensajeError('Usuario no encontrado','El usuario: '+usuarioLogin.email+' no existe');
 				}else{
 					crt = quitarEncabezadosCertificado(data.certificado);
 					/*Se guarda en Storage*/
@@ -98,11 +93,11 @@ $('#login').click(function(){
 					chrome.storage.local.get(['cert'],function(result){
 						if(result.cert != null){
 							$('#imgChW').attr('class','card-img-top mt-2');
-							mostrarMensaje('Certificado obtenido','El certificado ha sido guardado en el Storage de Google Chrome','success');
+							mostrarMensajeSuccess('Certificado obtenido','El certificado ha sido guardado en el Storage de Google Chrome');
 							console.log(result.cert);
 						}else{
 							$('#imgChW').attr('class','card-img-top mt-2');
-							mostrarMensaje('Certificado no obtenido','El certificado no ha sido guardado en el Storage de Google Chrome','error');
+							mostrarMensajeError('Certificado no obtenido','El certificado no ha sido guardado en el Storage de Google Chrome');
 						}
 					});
 				}
@@ -120,7 +115,7 @@ $('#login').click(function(){
 				});*/
 				//window.open('https://10.133.166.28:3000/api/obtenerCertificado?email='+usuarioLogin.email+'&password='+usuarioLogin.contrasenia);
 				$('#imgChW').attr('class','card-img-top mt-2');
-				mostrarMensaje('Usuario no valido','Por favor, verificar email y/o contraseña','error');
+				mostrarMensajeError('Ha ocurrido un problema','Por favor, intentelo mas tarde');
 			}
 		});
 		/*
@@ -187,7 +182,7 @@ $('#password').keyup(function(event){
 		if($('#passwordRepetir').val() == $('#password').val()){
 			//$('#matchPassword').html('');
 			$('#matchPassword').attr('style','color:green');
-			$('#matchPassword').html('Match');
+			$('#matchPassword').html('Coinciden');
 		}else{
 			if($('#passwordRepetir').val() != ''){
 				//$('#matchPassword').html('');
@@ -250,43 +245,44 @@ function comprobarPassword(password) {
 	}
 }
 
-function mostrarMensaje(titulo='', mensaje='', tipo='') {
-	if(tipo == 'error'){
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			confirmButtonColor: '#3085d6',
-			confirmButtonText: 'Aceptar'
-		});
-	}else if(tipo == 'warning'){
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			cancelButtonText: 'Cancelar',
-			confirmButtonText: 'Si, continuar!'
-		  }).then((result) => {
-			if (result.value) {
-				//window.close();
-				confirmarUsuario();
-			}
-		});
-	}else if(tipo == 'success'){
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			confirmButtonText: 'Aceptar'
-		}).then((result) => {
-			if(result.value){
-				$('#hrefWebPage').click();
-			}
-		});
-	}
+function mostrarMensajeError(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'error',
+		confirmButtonColor: '#3085d6',
+		confirmButtonText: 'Aceptar'
+	});
+}
+
+function mostrarMensajeWarning(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		cancelButtonText: 'Cancelar',
+		confirmButtonText: 'Si, continuar!'
+	  }).then((result) => {
+		if (result.value) {
+			confirmarUsuario();
+		}
+	});
+}
+
+function mostrarMensajeSuccess(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'success',
+		confirmButtonText: 'Aceptar'
+	}).then((result) => {
+		if(result.value){
+			$('#hrefWebPage').click();
+		}
+	});
 }
 
 $('#pRevocarCertificado').click(() => {
