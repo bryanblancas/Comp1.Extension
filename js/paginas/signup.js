@@ -15,7 +15,7 @@ var nuevoUsuario = {
 	organizacionAbreviado: 'Indefinido',
 	dominio: 'indefinido.com'
 };
-var IP = 'https://192.168.0.4:3000/api/';
+var IP = 'https://25.7.11.142:3000/api/';
 
 /***************************************/
 /******* Final Variables globales ******/
