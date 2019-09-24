@@ -3,7 +3,7 @@
 /***************************************/
 
 var usuarioLogin = {email: '', contrasenia: ''};
-var IP = 'https://192.168.0.4:3000/api/';
+var IP = 'https://25.7.11.142:3000/api/';
 
 /***************************************/
 /******* Final Variables globales ******/
@@ -26,15 +26,11 @@ $(document).ready(function(){
 	chrome.storage.local.get(['cert'],function(result){
 		if(result.cert != null){
 			//Existe un certificado
-			$('#hrefSignup').attr('style','display:none');
-			$('#hrefSignin').attr('style','display:none');
-			$('#btnSignin').attr('disabled','disabled');
-			$('#email').attr('disabled','disabled');
-			$('#password').attr('disabled','disabled');
+			$('#hrefSignup,#hrefSignin').attr('style','display:none');
+			$('#btnSignin,#email,#password').attr('disabled','disabled');
 		}else{
 			//No existe un certificado
-			$('#hrefSignup').attr('style','cursor:pointer');
-			$('#hrefSignin').attr('style','cursor:pointer');
+			$('#hrefSignup,#hrefSignin').attr('style','cursor:pointer');
 		}
 	});	
 });
@@ -47,10 +43,10 @@ function quitarEncabezadosCertificado(certificado) {
 
 $('#btnSignin').click(function(){	
 	if(comprobarEmail($('#email').val()) == false){
-		mostrarMensaje('Email incorrecto','El formato de email no es valido','error');
+		mostrarMensajeError('Email incorrecto','El formato de email no es valido');
 	}
 	else if(comprobarPassword($('#password').val()) == false){
-		mostrarMensaje('Contraseña incorrecta','El formato de la contraseña no es valido','error');
+		mostrarMensajeError('Contraseña incorrecta','El formato de la contraseña no es valido');
 	}
 	else{
 		usuarioLogin.email = $('#email').val();
@@ -72,7 +68,7 @@ $('#btnSignin').click(function(){
 		}).done(function(data){
 			if(data.status == 0){
 				$('#imgChW').attr('class','card-img-top mt-2');
-				mostrarMensaje('Usuario no valido','','error');
+				mostrarMensajeError('Usuario no encontrado','El usuario: '+usuarioLogin.email+' no existe');
 			}else{
 				crt = quitarEncabezadosCertificado(data.certificado);
 				/*Se guarda en Storage*/
@@ -81,17 +77,17 @@ $('#btnSignin').click(function(){
 					if(result.cert != null){
 						console.log(result.cert);
 						$('#imgChW').attr('class','card-img-top mt-2');
-						mostrarMensaje('Certificado obtenido','El certificado ha sido guardado en el Storage de Google Chrome','success');
+						mostrarMensajeSuccess('Certificado obtenido','El certificado ha sido guardado en el Storage de Google Chrome');
 					}else{
 						$('#imgChW').attr('class','card-img-top mt-2');
-						mostrarMensaje('Certificado no obtenido','El certificado no ha sido guardado en el Storage de Google Chrome','error');
+						mostrarMensajeError('Certificado no obtenido','El certificado no ha sido guardado en el Storage de Google Chrome');
 					}
 				});
 			}
 		}).fail(function(data){
 			//console.log(data);
 			$('#imgChW').attr('class','card-img-top mt-2');
-			mostrarMensaje('Ah ocurrido un error', 'Por favor intentelo mas tarde','error');
+			mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
 		});
 	}
 });
@@ -150,30 +146,44 @@ function comprobarPassword(password) {
 	}
 }
 
-function mostrarMensaje(titulo='', mensaje='', tipo='') {
-	if(tipo == 'warning'){
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			cancelButtonText: 'Cancelar',
-			confirmButtonText: 'Si, continuar!'
-		  }).then((result) => {
-			if (result.value) {
-				confirmarUsuario();
-			}
-		});
-	}else{
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			confirmButtonText: 'Aceptar'
-		});
-	}
+function mostrarMensajeError(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'error',
+		confirmButtonColor: '#3085d6',
+		confirmButtonText: 'Aceptar'
+	});
+}
+
+function mostrarMensajeWarning(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		cancelButtonText: 'Cancelar',
+		confirmButtonText: 'Si, continuar!'
+	  }).then((result) => {
+		if (result.value) {
+			confirmarUsuario();
+		}
+	});
+}
+
+function mostrarMensajeSuccess(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'success',
+		confirmButtonText: 'Aceptar'
+	}).then((result) => {
+		if(result.value){
+			$('#hrefWebPage').click();
+		}
+	});
 }
 
 

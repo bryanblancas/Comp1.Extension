@@ -44,3 +44,20 @@
       transform: rotate(359deg);
   }
 }
+
+#container {
+	margin:0px auto;
+	text-align:center;
+  background-color:transparent;
+  border: 0px;
+}
+ 
+#container img{
+  vertical-align:middle;
+  margin-top: 5%;
+}
+
+#tituloImagen{
+  vertical-align:middle;
+  margin-top: 5%;
+}

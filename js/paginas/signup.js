@@ -15,7 +15,7 @@ var nuevoUsuario = {
 	organizacionAbreviado: 'Indefinido',
 	dominio: 'indefinido.com'
 };
-var IP = 'https://192.168.0.4:3000/api/';
+var IP = 'https://25.7.11.142:3000/api/';
 
 /***************************************/
 /******* Final Variables globales ******/
@@ -58,17 +58,11 @@ $(document).ready(function(){
 	chrome.storage.local.get(['cert'],function(result){
 		if(result.cert != null){
 			//Existe un certificado
-			$('#hrefSignup').attr('style','display:none');
-			$('#hrefSignin').attr('style','display:none');
-			$('#email').attr('disabled','disabled');
-			$('#password').attr('disabled','disabled');
-			$('#username').attr('disabled','disabled');
-			$('#passwordRepetir').attr('disabled','disabled');
-			$('#btnContinuar').attr('disabled','disabled');
+			$('#hrefSignup,#hrefSignin').attr('style','display:none');
+			$('#email,#password,#username,#passwordRepetir,#btnContinuar').attr('disabled','disabled');
 		}else{
 			//No existe un certificado
-			$('#hrefSignup').attr('style','cursor:pointer');
-			$('#hrefSignin').attr('style','cursor:pointer');
+			$('#hrefSignup,#hrefSignin').attr('style','cursor:pointer');
 		}
 	});	
 	
@@ -76,18 +70,18 @@ $(document).ready(function(){
 
 $('#btnContinuar').click(function(){
 	if(comprobarUserName($('#username').val()) == false){
-		mostrarMensaje('Nombre de usuario incorrecto','El formato del nombre de usuario no es valido','error');
+		mostrarMensajeError('Nombre de usuario incorrecto','El formato del nombre de usuario no es valido');
 	}
 	else if(comprobarEmail($('#email').val()) == false){
-		mostrarMensaje('Email incorrecto','El formato de email no es valido','error');
+		mostrarMensajeError('Email incorrecto','El formato de email no es valido');
 	}
 	else if(comprobarPassword($('#password').val()) == false){
-		mostrarMensaje('Contraseña incorrecta','El formato de la contraseña no es valido','error');
+		mostrarMensajeError('Contraseña incorrecta','El formato de la contraseña no es valido');
 	}
 	else if($('#password').val() != $('#passwordRepetir').val()){
-		mostrarMensaje('Contraseñas no validas','Las contraseñas introducidas no coinciden','error');
+		mostrarMensajeError('Contraseñas incorrectas','Las contraseñas introducidas no coinciden');
 	}else{
-		mostrarMensaje('¿Desea continuar?','','warning');
+		mostrarMensajeWarning('¿Desea continuar?','');
 	}
 });
 
@@ -100,15 +94,15 @@ $('#btnRegresar').click(function(){
 $('#btnSignup').click(function(){
 	console.log($('#selectCiudad').val());
 	if($('#selectCiudad').val() == null){
-		mostrarMensaje('','Porfavor seleccione una ciudad','error');
+		mostrarMensajeError('','Porfavor seleccione una ciudad');
 	}else if($('#estado').val().length == 0){
-		mostrarMensaje('','Porfavor ingrese un estado','error');
+		mostrarMensajeError('','Porfavor ingrese un estado');
 	}else if($('#localidad').val().length == 0){
-		mostrarMensaje('','Porfavor ingrese una localidad','error');
+		mostrarMensajeError('','Porfavor ingrese una localidad');
 	}else if($('#codigoPostal').val().length == 0){
-		mostrarMensaje('','Porfavor ingrese un código postal','error');
+		mostrarMensajeError('','Porfavor ingrese un código postal');
 	}else if($('#direccion').val().length == 0){
-		mostrarMensaje('','Porfavor ingrese una dirección','error');
+		mostrarMensajeError('','Porfavor ingrese una dirección');
 	}else{
 		nuevoUsuario.username = $('#username').val();
 		nuevoUsuario.email = $('#email').val();
@@ -132,7 +126,7 @@ $('#btnSignup').click(function(){
 			nuevoUsuario.dominio = $('#dominio').val();
 		}
 
-		mostrarMensajeConfirmacion('¿Desea continuar?','Se registrará usuario actual','warning');
+		mostrarMensajeConfirmacion('¿Desea continuar?','Se registrará usuario actual');
 	}
 });
 
@@ -162,15 +156,15 @@ function confirmarUsuario() {
 		console.log(data);
 		if(data.status == 0){
 			$('#imgChW').attr('class','card-img-top mt-2');
-			mostrarMensaje('Usuario no creado',data.email,'error');	
+			mostrarMensajeError('Usuario no registrado','Ya existe una cuenta asociada al correo: '+data.email);	
 		}else{
 			$('#imgChW').attr('class','card-img-top mt-2');
 			//mostrarMensaje('Nuevo Usuario Creado', 'Email: '+data.email,'success');
 			/*Se guarda en Storage*/
 			//chrome.storage.local.set({cert: null});
 			Swal.fire({
-				title: 'Nuevo Usuario Creado',
-				text: "Email: "+data.email,
+				title: 'Nuevo Usuario Registrado',
+				text: "Se ha creado nuevo usuario con correo email: "+data.email,
 				type: 'success',
 				confirmButtonColor: '#3085d6',				
 				confirmButtonText: 'Iniciar Sesión'
@@ -182,7 +176,7 @@ function confirmarUsuario() {
 		}
 	}).fail(function(xhr, status, error){
 		$('#imgChW').attr('class','card-img-top mt-2');
-		mostrarMensaje('Ah ocurrido un error', 'Por favor intentelo mas tarde','error');
+		mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
 	});
 }
 
@@ -196,11 +190,11 @@ $('#passwordRepetir').keyup(function(){
 		if($('#passwordRepetir').val() == $('#password').val()){
 			//$('#matchPassword').html('');
 			$('#matchPassword').attr('style','color:green');
-			$('#matchPassword').html('Match');
+			$('#matchPassword').html('Coinciden');
 		}else{
 			//$('#matchPassword').html('');
 			$('#matchPassword').attr('style','color:red');
-			$('#matchPassword').html('Diferente');
+			$('#matchPassword').html('Diferentes');
 		}
 	}
 });
@@ -215,12 +209,12 @@ $('#password').keyup(function(){
 		if($('#passwordRepetir').val() == $('#password').val()){
 			//$('#matchPassword').html('');
 			$('#matchPassword').attr('style','color:green');
-			$('#matchPassword').html('Match');
+			$('#matchPassword').html('Coinciden');
 		}else{
 			if($('#passwordRepetir').val() != ''){
 				//$('#matchPassword').html('');
 				$('#matchPassword').attr('style','color:red');
-				$('#matchPassword').html('Diferente');
+				$('#matchPassword').html('Diferentes');
 			}
 		}
 	}
@@ -311,57 +305,62 @@ function comprobarPassword(password) {
 	}
 }
 
-function mostrarMensaje(titulo='', mensaje='', tipo='') {
-	if(tipo == 'warning'){
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			cancelButtonText: 'Cancelar',
-			confirmButtonText: 'Si, continuar!'
-		  }).then((result) => {
-			if (result.value) {
-				$('#usuario').attr('class','tab-pane fade');
-				$('#certificado').attr('class','tab-pane fade show active');
-			}
-		});
-	}else{
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			confirmButtonText: 'Aceptar'
-		});
-	}
+function mostrarMensajeError(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'error',
+		confirmButtonColor: '#3085d6',
+		confirmButtonText: 'Aceptar'
+	});
 }
 
-function mostrarMensajeConfirmacion(titulo='', mensaje='', tipo='') {
-	if(tipo == 'warning'){
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			cancelButtonText: 'Cancelar',
-			confirmButtonText: 'Si, continuar!'
-		  }).then((result) => {
-			if (result.value) {
-				confirmarUsuario();
-			}
-		});
-	}else{
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			confirmButtonText: 'Aceptar'
-		});
-	}
+function mostrarMensajeWarning(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		cancelButtonText: 'Cancelar',
+		confirmButtonText: 'Si, continuar!'
+	  }).then((result) => {
+		if (result.value) {
+			$('#usuario').attr('class','tab-pane fade');
+			$('#certificado').attr('class','tab-pane fade show active');
+		}
+	});
+}
+
+function mostrarMensajeSuccess(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'success',
+		confirmButtonText: 'Aceptar'
+	}).then((result) => {
+		if(result.value){
+			$('#hrefWebPage').click();
+		}
+	});
+}
+
+function mostrarMensajeConfirmacion(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		cancelButtonText: 'Cancelar',
+		confirmButtonText: 'Si, continuar!'
+		}).then((result) => {
+		if (result.value) {
+			confirmarUsuario();
+		}
+	});
 }
 
 $('#imgMostrarOpAvanzadasAbajo').click(function(){
