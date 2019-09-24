@@ -176,7 +176,7 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 	//console.log("CHAFFING EN BITES : " + stringChaffingCertificado + " " + stringChaffingCertificado.length);
 
 	let stringBytesChaffingCertificado = arrayBytesToBites(stringChaffingCertificado, false);
-	console.log("CHAFFING CON CARACTERES ESPECIALES: "+stringBytesChaffingCertificado);
+	console.log("CHAFFING CON CARACTERES ESPECIALES: "+stringBytesChaffingCertificado+" "+stringBytesChaffingCertificado.length);
 	
 
 	//PASAR A BASE64 EL CHAFFING
