@@ -52,7 +52,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 			}
 		}
 		},
-	{urls: ["*://10.100.64.48/login/byChaffing"]},
+	{urls: ["*://localhost/login"]},
 	["blocking", "requestHeaders"]
 );
 
@@ -124,19 +124,11 @@ function getPatternBite(LenCertificadoCharArray, LenCabeceraInyectar){
 
 	}
 
-	/*//y: almacena el número de bits sobrantes
-	let y = (lengthPc*8) % 8;
-	y = 8 - y;
-	if(y == 0)
-		y = 255;
+	console.log("Número de ceros en pattern: "+n_0-1);
 
-	//Agregando el byte de control de bits sobrantes (y) al inicio del patrón de chaffing
-	pcArray[0] = String.fromCharCode(y);
-	*/
 	console.log("PATRÓN CREADO EN BITES: "+pcArray.join("")+" "+pcArray.length);
 
 	pcArray = transformIllegalCharacters(pcArray);
-
 	console.log("PATRÓN CREADO EN BITES SIN CARACTERES ESPECIALES: "+pcArray.join("")+" "+pcArray.length);
 
 	return pcArray;
@@ -181,25 +173,20 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 		contPcCharTot++;
 	}
 
-	console.log("CHAFFING EN BITES : " + stringChaffingCertificado + " " + stringChaffingCertificado.length);
+	//console.log("CHAFFING EN BITES : " + stringChaffingCertificado + " " + stringChaffingCertificado.length);
 
 	let stringBytesChaffingCertificado = arrayBytesToBites(stringChaffingCertificado, false);
-
+	console.log("CHAFFING CON CARACTERES ESPECIALES: "+stringBytesChaffingCertificado);
+	
 	//PASAR A BASE64 EL CHAFFING
-
-	stringBytesChaffingCertificado = btoa(stringBytesChaffingCertificado);
-
+	//stringBytesChaffingCertificado = btoa(stringBytesChaffingCertificado);
+	stringBytesChaffingCertificado = encodeURI(stringBytesChaffingCertificado)
 	console.log("CHAFFING EN BYTES (BASE64): " + stringBytesChaffingCertificado + " " + stringBytesChaffingCertificado.length);
 
-
 	//Se cambia el valor de Accept con el Chaffing del certificado
-	let i = 0;
-
 	details.requestHeaders.push({name:"Chaffing",value: stringBytesChaffingCertificado});
-	
 
 	let patronInBites = arrayBytesToBites(patternChaffing, false);
-	// Agregar un campo Pattern al nuevo encabezado
 	details.requestHeaders.push({name:"Pattern",value: patronInBites});
 	console.log("PATRÓN CREADO EN BYTES: "+patronInBites);
 
@@ -266,18 +253,18 @@ function setFreeRequest(newHeader){
         }
     }
 
-    console.log(chaff);
+    /*console.log(chaff);
     console.log(pattern);
     console.log(url);
-    console.log(newHeader);
+    console.log(newHeader);*/
 	//Liberación de la petición por medio de AJAX 
 	$.ajax({
 		url: url,
-		type: "POST",
+		type: "GET",
 		contentType: "text/plain;charset=UTF-8",
 		datatype: 'html',
 		headers:{
-			"Chaffing" : chaff,
+			"Chaffing" : "certificate_bryanvet",
 			"Pattern" : pattern
 		},
 		success:function(result){
@@ -362,7 +349,6 @@ function transformIllegalCharacters(array){
 	//console.log("Nuevo patrón : "+newString);
 	return newString.split("");
 }
-
 
 // Función que devuelve un substring legal
 function analyzeSubstring(string){
