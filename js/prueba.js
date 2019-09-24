@@ -2,7 +2,7 @@
 /********** Variables globales *************/
 var btnActivar = true;
 var statusCertificado = false;
-var IP = 'https://25.7.11.142:3000/api/';
+var IP = 'https://192.168.0.16:3000/api/';
 /*******************************************/
 
 $(document).ready(function() {
