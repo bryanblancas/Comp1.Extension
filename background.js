@@ -125,11 +125,12 @@ function getPatternBite(LenCertificadoCharArray, LenCabeceraInyectar){
 	}
 
 	console.log("Número de ceros en pattern: "+n_0-1);
-
 	console.log("PATRÓN CREADO EN BITES: "+pcArray.join("")+" "+pcArray.length);
 
+	/*
 	pcArray = transformIllegalCharacters(pcArray);
 	console.log("PATRÓN CREADO EN BITES SIN CARACTERES ESPECIALES: "+pcArray.join("")+" "+pcArray.length);
+	*/
 
 	return pcArray;
 }
@@ -173,32 +174,28 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 		contPcCharTot++;
 	}
 
-	//console.log("CHAFFING EN BITES : " + stringChaffingCertificado + " " + stringChaffingCertificado.length);
-
 	let stringBytesChaffingCertificado = arrayBytesToBites(stringChaffingCertificado, false);
 	console.log("CHAFFING CON CARACTERES ESPECIALES: "+stringBytesChaffingCertificado+" "+stringBytesChaffingCertificado.length);
-	
 
 	//PASAR A BASE64 EL CHAFFING
-	one = btoa(stringBytesChaffingCertificado);
-	two = base64_encode(stringBytesChaffingCertificado);
-	
-	if(one === two)
-		console.log("son iguales");
-	else
-		console.log("no son iguales");
-	
-
-
-	stringBytesChaffingCertificado = btoa(stringBytesChaffingCertificado)
+	stringBytesChaffingCertificado = base64_encode(stringBytesChaffingCertificado)
 	console.log("CHAFFING EN BYTES (BASE64): " + stringBytesChaffingCertificado + " " + stringBytesChaffingCertificado.length);
 
-	//Se cambia el valor de Accept con el Chaffing del certificado
+	//SE AGREGA UN NUEVO HEADER
 	details.requestHeaders.push({name:"Chaffing",value: stringBytesChaffingCertificado});
 
-	let patronInBites = arrayBytesToBites(patternChaffing, false);
-	details.requestHeaders.push({name:"Pattern",value: patronInBites});
-	console.log("PATRÓN CREADO EN BYTES: "+patronInBites);
+
+	let patroninBytes = arrayBytesToBites(patternChaffing, false);
+	/*
+		POR EL MOMENTO CODIFICADO EN BASE 64 PARA PODER MANDARLO EN RED
+		MÁS ADELANTE ESTO SE TENDRÍA QUE CAMBIAR A IMPLEMENTAR EL CIFRADO ASIMÉTRICO
+	*/
+	patroninBytes = base64_encode(patroninBytes);
+
+
+	//SE AGREGA UN NUEVO HEADER DE PATTERN
+	details.requestHeaders.push({name:"Pattern",value: patroninBytes});
+	console.log("PATRÓN CREADO EN BYTES: "+patroninBytes+ "  "+patroninBytes.length);
 
 	return details;
 }
@@ -272,9 +269,9 @@ function setFreeRequest(newHeader){
 		url: url,
 		type: "GET",
 		contentType: "text/plain;charset=UTF-8",
-		datatype: 'html',
-		headers:{
-			"Chaffing" : "certificate_bryanvet",
+		datatype: 'text/plain',
+		headers: {
+			"Chaffing" : "chaff",
 			"Pattern" : pattern
 		},
 		success:function(result){
@@ -287,7 +284,7 @@ function setFreeRequest(newHeader){
 		},
 		error:function(result){
 			console.log("ERROR AL ENVIAR PETICIÓN, IMPRIMIENDO RESPUESTA: ");
-			//console.log(result);
+			console.log(result);
 		}
 	})
 }
@@ -383,8 +380,6 @@ function analyzeSubstring(string){
 
 	return stringArray.join("");
 }
-
-
 
 function base64_encode (s)
 {
