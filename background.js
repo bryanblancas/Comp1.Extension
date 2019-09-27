@@ -1,4 +1,4 @@
-console.log("Background");
+//console.log("Background");
 
 
 // Variable que guarda el valor actual del botón "activar"
@@ -44,7 +44,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 					}
 				}
 				
-				console.log("ENCABEZADO A MODIFICAR: \n"+cabeceraInyectar);
+				//console.log("ENCABEZADO A MODIFICAR: \n"+cabeceraInyectar);
 				getCertificateFromStorage(cabeceraInyectar, detailsComplete);
 				
 				// Bloquear petición
@@ -68,7 +68,7 @@ function getCertificateFromStorage(cabeceraInyectar, details) {
 		if(result.cert != null){
 			
 			certificadoCharArray = result.cert;
-			console.log("CERTIFICADO: \n"+certificadoCharArray);
+			//console.log("CERTIFICADO: \n"+certificadoCharArray);
 
 			chaffingProcess(certificadoCharArray, cabeceraInyectar, details);
 		}
@@ -91,8 +91,8 @@ function chaffingProcess(certificadoCharArray, cabeceraInyectar, details) {
 	// PATTERN está en posición 4
 	//let newHeader = makeChaffing(patternChaffing,certificadoCharArray,cabeceraInyectar,details);
 	let newHeader = makeChaffingBite(patternChaffing,certificadoCharArray,cabeceraInyectar,details);
-	console.log("NUEVA PETICIÓN HTTP: ");
-	console.log(newHeader);
+	//console.log("NUEVA PETICIÓN HTTP: ");
+	//console.log(newHeader);
 
 	//Liberación de la petición
 	setFreeRequest(newHeader);
@@ -124,13 +124,10 @@ function getPatternBite(LenCertificadoCharArray, LenCabeceraInyectar){
 
 	}
 
+/*
 	console.log("Número de ceros en pattern: "+n_0-1);
 	console.log("PATRÓN CREADO EN BITES: "+pcArray.join("")+" "+pcArray.length);
-
-	/*
-	pcArray = transformIllegalCharacters(pcArray);
-	console.log("PATRÓN CREADO EN BITES SIN CARACTERES ESPECIALES: "+pcArray.join("")+" "+pcArray.length);
-	*/
+*/
 
 	return pcArray;
 }
@@ -149,7 +146,7 @@ function getSecureRandomNumber() {
 }
 
 
-// Función que realiza el chaffing con base a el patrón (patterChaffing)
+// Función que realiza el chaffing con base a el patrón (patternChaffing)
 // si hay un 0 en el patrón, se coloca un carácter del certificado
 // si hay un 1 en el patrón, se coloca un carácter de la cabecera 
 function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details){
@@ -163,8 +160,6 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 	let contCertificado = 0; 	// 	contador para certificado
 	let contEncabezado = 0; 	// 	contador para encabezado Mozilla
 	
-	//console.log("+++++++++++++++++++"+patternChaffing);
-
 	while(contPcCharTot < patternChaffing.length){
 		if(patternChaffing[contPcCharTot] == 0)
 			stringChaffingCertificado += stringCertArray[contCertificado++]
@@ -174,32 +169,33 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 		contPcCharTot++;
 	}
 
+	console.log("CHAFFING CREADO EN BITES: "+stringChaffingCertificado+ "   "+stringChaffingCertificado.length);
+
 	let stringBytesChaffingCertificado = arrayBytesToBites(stringChaffingCertificado, false);
 	console.log("CHAFFING CON CARACTERES ESPECIALES: "+stringBytesChaffingCertificado+" "+stringBytesChaffingCertificado.length);
-
+	
 	//PASAR A BASE64 EL CHAFFING
-	stringBytesChaffingCertificado = base64_encode(stringBytesChaffingCertificado)
+	stringBytesChaffingCertificado = base64_encode(stringBytesChaffingCertificado);
 	console.log("CHAFFING EN BYTES (BASE64): " + stringBytesChaffingCertificado + " " + stringBytesChaffingCertificado.length);
 
 	//SE AGREGA UN NUEVO HEADER
 	details.requestHeaders.push({name:"Chaffing",value: stringBytesChaffingCertificado});
 
-
+	console.log("PATRON CREADO EN BITES: "+patternChaffing.join('')+ "  "+patternChaffing.length);
 	let patroninBytes = arrayBytesToBites(patternChaffing, false);
+	console.log("PATRON CREADO CON CARACTERES ESPECIALES: "+patroninBytes+"   "+patroninBytes.length);
 	/*
 		POR EL MOMENTO CODIFICADO EN BASE 64 PARA PODER MANDARLO EN RED
 		MÁS ADELANTE ESTO SE TENDRÍA QUE CAMBIAR A IMPLEMENTAR EL CIFRADO ASIMÉTRICO
 	*/
 	patroninBytes = base64_encode(patroninBytes);
-
-
+	console.log("PATRÓN CREADO (BASE64): "+patroninBytes+ "  "+patroninBytes.length);
+	
 	//SE AGREGA UN NUEVO HEADER DE PATTERN
 	details.requestHeaders.push({name:"Pattern",value: patroninBytes});
-	console.log("PATRÓN CREADO EN BYTES: "+patroninBytes+ "  "+patroninBytes.length);
 
 	return details;
 }
-
 
 // Función que retorna una cadena de caracteres 0 y 1
 // String = "text"
@@ -260,10 +256,8 @@ function setFreeRequest(newHeader){
         }
     }
 
-    /*console.log(chaff);
-    console.log(pattern);
-    console.log(url);
-    console.log(newHeader);*/
+    console.log(newHeader);
+
 	//Liberación de la petición por medio de AJAX 
 	$.ajax({
 		url: url,
@@ -271,15 +265,12 @@ function setFreeRequest(newHeader){
 		contentType: "text/plain;charset=UTF-8",
 		datatype: 'text/plain',
 		headers: {
-			"Chaffing" : "chaff",
+			"Chaffing" : chaff,
 			"Pattern" : pattern
 		},
 		success:function(result){
 			console.log("ÉXITO AL ENVIAR PETICIÓN, IMPRIMIENDO RESPUESTA: ");
             console.log(result);
-            //let tab = window.open('about:blank', '_blank');
-            //tab.document.write(result);
-            //tab.document.close();
             window.open(result);
 		},
 		error:function(result){
@@ -316,9 +307,9 @@ function arrayBytesToBites(array, patron){
 	for(i; i < array.length; i++){
 		
 		if(count == 8){
-			//console.log("char creado: "+charCreado.toString(2)+"  "+charCreado);
+			////console.log("char creado: "+charCreado.toString(2)+"  "+charCreado);
 			stringInBites += String.fromCharCode(charCreado);
-			//console.log("estatus actual patrón: "+stringInBites);
+			////console.log("estatus actual patrón: "+stringInBites);
 			charCreado = 0;
 			count = 0;
 		}
@@ -330,9 +321,9 @@ function arrayBytesToBites(array, patron){
 	}
 
 	//ÚLTIMO CHAR CREADO
-	//console.log("char creado: "+charCreado.toString(2)+"   "+charCreado);
+	////console.log("char creado: "+charCreado.toString(2)+"   "+charCreado);
 	stringInBites += String.fromCharCode(charCreado);
-	//console.log("----> "+stringInBites+" "+stringInBites.length);
+	////console.log("----> "+stringInBites+" "+stringInBites.length);
 
 	return stringInBites;
 }
@@ -350,10 +341,10 @@ function transformIllegalCharacters(array){
 
 	for(i; i < numBytes; i++){
 		substring = string.substring(i*8,(i+1)*8);
-		//console.log("analizando: "+substring);
+		////console.log("analizando: "+substring);
 		newString += analyzeSubstring(substring);
 	}
-	//console.log("Nuevo patrón : "+newString);
+	////console.log("Nuevo patrón : "+newString);
 	return newString.split("");
 }
 
@@ -401,9 +392,9 @@ function base64_encode (s)
   for (c = 0; c < s.length; c += 3) {
 
     // we add newlines after every 76 output characters, according to the MIME specs
-    if (c > 0 && (c / 3 * 4) % 76 == 0) { 
+    /*if (c > 0 && (c / 3 * 4) % 76 == 0) { 
       r += "\r\n"; 
-    }
+    }*/
 
     // these three 8-bit (ASCII) characters become one 24-bit number
     var n = (s.charCodeAt(c) << 16) + (s.charCodeAt(c+1) << 8) + s.charCodeAt(c+2);
