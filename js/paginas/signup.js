@@ -15,7 +15,7 @@ var nuevoUsuario = {
 	organizacionAbreviado: 'Indefinido',
 	dominio: 'indefinido.com'
 };
-var IP = 'https://10.100.66.216:3000/api/';
+var IP = new IPClase();
 
 /***************************************/
 /******* Final Variables globales ******/
@@ -134,7 +134,7 @@ function confirmarUsuario() {
 	console.log(nuevoUsuario);
 	$.ajax({
 		type: 'POST',
-		url: IP+'guardarUsuario',
+		url: IP.getIP()+'guardarUsuario',
 		dataType: 'json',
 		data: {
 			'username': nuevoUsuario.username,

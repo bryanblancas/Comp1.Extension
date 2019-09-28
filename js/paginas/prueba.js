@@ -2,7 +2,7 @@
 /********** Variables globales *************/
 var btnActivar = true;
 var statusCertificado = false;
-var IP = 'https://10.100.66.216:3000/api/';
+var IP = new IPClase();
 /*******************************************/
 
 $(document).ready(function() {
@@ -34,7 +34,7 @@ $(document).ready(function() {
 
 $('#btnAviso').click(function(){
 	//chrome.storage.local.set({statusCertConection: true});
-	window.open(IP+'Aviso');
+	window.open(IP.getIP()+'Aviso');
 });
 
 $('#btnActivar').click(function(){

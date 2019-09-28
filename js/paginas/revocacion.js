@@ -3,7 +3,7 @@
 /***************************************/
 
 var usuarioLogin = {email: '', contrasenia: ''};
-var IP = 'https://10.100.66.216:3000/api/';
+var IP = new IPClase();
 
 /***************************************/
 /******* Final Variables globales ******/
@@ -71,7 +71,7 @@ $('#btnRevocar').click(function(){
 function mensajeConfirmacion() {
 	$.ajax({
 		type: 'POST',
-		url: IP+'revocarCertificado',
+		url: IP.getIP()+'revocarCertificado',
 		dataType: 'json',
 		data: {
 			'email': usuarioLogin.email,

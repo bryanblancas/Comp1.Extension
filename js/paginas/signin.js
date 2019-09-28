@@ -3,7 +3,7 @@
 /***************************************/
 
 var usuarioLogin = {email: '', contrasenia: ''};
-var IP = 'https://10.100.66.216:3000/api/';
+var IP = new IPClase();
 
 /***************************************/
 /******* Final Variables globales ******/
@@ -56,7 +56,7 @@ $('#btnSignin').click(function(){
 		console.log(usuarioLogin);
 		$.ajax({
 			type: 'POST',
-			url: IP+'ObtenerCertificadoUsuario',
+			url: IP.getIP()+'ObtenerCertificadoUsuario',
 			dataType: 'json',
 			data: {
 				'email': usuarioLogin.email,
