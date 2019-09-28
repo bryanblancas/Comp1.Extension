@@ -169,11 +169,18 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 		contPcCharTot++;
 	}
 
+
+	/*
+		
+		PARA CHAFFING
+
+	*/
+
 	console.log("CHAFFING CREADO EN BITES: "+stringChaffingCertificado+ "   "+stringChaffingCertificado.length);
 
 	let stringBytesChaffingCertificado = arrayBytesToBites(stringChaffingCertificado, false);
 	console.log("CHAFFING CON CARACTERES ESPECIALES: "+stringBytesChaffingCertificado+" "+stringBytesChaffingCertificado.length);
-	
+
 	//PASAR A BASE64 EL CHAFFING
 	stringBytesChaffingCertificado = base64_encode(stringBytesChaffingCertificado);
 	console.log("CHAFFING EN BYTES (BASE64): " + stringBytesChaffingCertificado + " " + stringBytesChaffingCertificado.length);
@@ -181,11 +188,19 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 	//SE AGREGA UN NUEVO HEADER
 	details.requestHeaders.push({name:"Chaffing",value: stringBytesChaffingCertificado});
 
+
+	/*
+	
+		PARA PATTERN
+
+	*/
+
+
 	console.log("PATRON CREADO EN BITES: "+patternChaffing.join('')+ "  "+patternChaffing.length);
 	let patroninBytes = arrayBytesToBites(patternChaffing, false);
 	console.log("PATRON CREADO CON CARACTERES ESPECIALES: "+patroninBytes+"   "+patroninBytes.length);
 	
-	var key = "chiale";
+	var key = getKey();
 
 	patroninBytes_aes = CryptoJS.AES.encrypt(patroninBytes, key);
 	patroninBytes = patroninBytes_aes.toString()
@@ -212,6 +227,13 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 
 	return details;
 }
+
+
+// Función que retorna la llave a utilizar para el AES
+function getKey(){
+	return "chiale";
+}
+
 
 // Función que retorna una cadena de caracteres 0 y 1
 // String = "text"
@@ -345,51 +367,9 @@ function arrayBytesToBites(array, patron){
 }
 
 
-// Función que modifica todos los caracteres ilegales de una cadena por otros legales
-// Un carácter ilegal es aquel cuyo valor ascii es [0,31] U [127]
-function transformIllegalCharacters(array){
-	let string = array.join("");
-	let newString = "";
-	let numBytes = (string.length) / 8;
-	let i = 0;
-	let substring;
-	let status;
 
-	for(i; i < numBytes; i++){
-		substring = string.substring(i*8,(i+1)*8);
-		////console.log("analizando: "+substring);
-		newString += analyzeSubstring(substring);
-	}
-	////console.log("Nuevo patrón : "+newString);
-	return newString.split("");
-}
-
-// Función que devuelve un substring legal
-function analyzeSubstring(string){
-	let num = 0;
-	let stringArray = string.split("");
-	let lastIndexOfOne = 0;
-	let i = 0;
-
-	for(i = 0; i < 8; i++){
-		num = num << 1;
-		if(string[i] == '1'){
-			num = num | 1;
-			lastIndexOfOne = i;
-		}
-	}
-	// 31 = 0001 1111
-	// 127 = 0111 1111
-	if((num >= 0 && num <=31) | num == 127) {
-		stringArray[lastIndexOfOne] = '0';
-		stringArray[0] = '1';
-	}
-
-	return stringArray.join("");
-}
-
-function base64_encode (s)
-{
+// Función de codifica la cadena s dada a base64.
+function base64_encode (s){
   // the result/encoded string, the padding string, and the pad count
   var base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   var r = ""; 
