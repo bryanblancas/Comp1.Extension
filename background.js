@@ -198,6 +198,7 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 
 	console.log("PATRON CREADO EN BITES: "+patternChaffing.join('')+ "  "+patternChaffing.length);
 	let patroninBytes = arrayBytesToBites(patternChaffing, false);
+	//patroninBytes = "chialevaledornobienloco";
 	console.log("PATRON CREADO CON CARACTERES ESPECIALES: "+patroninBytes+"   "+patroninBytes.length);
 	
 	var key = getKey();
@@ -207,7 +208,7 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 	console.log("PATRON CIFRADO CON AES: "+patroninBytes+"   "+patroninBytes.length);
 
 	var encrypt = new JSEncrypt();
-	encrypt.setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0oTD7GPsZozeTjvVmMfQhb7R1xdxyagFV4VENIkVFctz+OXddZPJiEpIQwS5ATb4VWSiNqXL/nZBkMuHGRL9DJRg6Qpg/wDwwmzHnmuIHNCMRk98xY+kEvdGNZ4WszLDnp759DcVIeZ9tYKgBcA/0d6g8Ao0gNFdyo1Y1V7v4MRbOVOIVoscZuhrNl7sBM0BB1b4tBYCKtP/Vexo6XMzynMwMsDeZYxES2XsM+fFcTbKVqSP5EQqFBwWpyuyD8WNDmjRYdYLmev9/54tOhKx5+MHU+CJezJ0m1vv683EaTUSSYLC3Guqh7P21w4DZ/2KivwssMWmfWLhJAzpEQ15swIDAQAB");
+	encrypt.setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1fsvhHzUiUB20kciWsdCPf9gBiI6Z2cXnOH+VMkQtwXYhWyf0VXnV/cXGieXS5HvrZJvb0ldo8ZSqkaBy9BXrIAFswTgOxWfusa3nmL6YRzIHxI6FgpAt9xQAIKtnEWMShsufS/7FeR8Yam/u2qI2u+kM00ZPKQPOZPGQvEjy2QX88k/r88jP2a5UPzkSfg1vuAwMxGrVSuPcGrAUd2qJF6Slb1y6KvSo2KYLdnpv/us5MRKO+28u2QNr++uMIkyJz4Pqj67VUT2r1XThkdxAfPTgcRne15qQ2aDtlLqw8T6uo2xYNekZjuoUxenfxzikv3ejFgShT4bON6yzBtv0wIDAQAB");
 	var encrypted = encrypt.encrypt(key);
 
 	patroninBytes += " ";
@@ -231,7 +232,7 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 
 // Función que retorna la llave a utilizar para el AES
 function getKey(){
-	return "chiale";
+	return "chialechialechia";
 }
 
 
