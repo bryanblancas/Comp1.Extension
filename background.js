@@ -185,11 +185,18 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 	let patroninBytes = arrayBytesToBites(patternChaffing, false);
 	console.log("PATRON CREADO CON CARACTERES ESPECIALES: "+patroninBytes+"   "+patroninBytes.length);
 	
+	var key = "chiale";
+
+	patroninBytes_aes = CryptoJS.AES.encrypt(patroninBytes, key);
+	patroninBytes = patroninBytes_aes.toString()
+	console.log("PATRON CIFRADO CON AES: "+patroninBytes+"   "+patroninBytes.length);
+
 	var encrypt = new JSEncrypt();
-	encrypt.setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA22s3pNaYYILMQzYh7U8u4S6m6/hyXjG0wa05UcCVS9ty3XyqgnFpp/bDdV7tm/eO21hoWaq8wLoPQttoME35J0na19GKNu1/hC6NkXYf5Jrs2zytnLe3UtJLU6+j2OUpiWshp6RV8WYUHZNHNdSi1eyQcn1OzAb2hWVH70hzkZsoHRNTuymeBy077u8Aj3DVWIwWofoeAd63OIbvRE4awemubwmgzG2SKZwwRJUfP+TG4UBP4LA5TAK+puekfOFnsthPw9K1n/Ugw34r59BakmNVqgfeACPjFTHqd+8YHOL1SKwKmKofLvCJPsISxGtxIntadf5tgTXvlRmtv2SGJwIDAQAB");
-	var encrypted = encrypt.encrypt(patroninBytes);
-	
-	console.log(encrypted);
+	encrypt.setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0oTD7GPsZozeTjvVmMfQhb7R1xdxyagFV4VENIkVFctz+OXddZPJiEpIQwS5ATb4VWSiNqXL/nZBkMuHGRL9DJRg6Qpg/wDwwmzHnmuIHNCMRk98xY+kEvdGNZ4WszLDnp759DcVIeZ9tYKgBcA/0d6g8Ao0gNFdyo1Y1V7v4MRbOVOIVoscZuhrNl7sBM0BB1b4tBYCKtP/Vexo6XMzynMwMsDeZYxES2XsM+fFcTbKVqSP5EQqFBwWpyuyD8WNDmjRYdYLmev9/54tOhKx5+MHU+CJezJ0m1vv683EaTUSSYLC3Guqh7P21w4DZ/2KivwssMWmfWLhJAzpEQ15swIDAQAB");
+	var encrypted = encrypt.encrypt(key);
+
+	patroninBytes += " ";
+	patroninBytes += encrypted.toString();
 
 	/*
 		POR EL MOMENTO CODIFICADO EN BASE 64 PARA PODER MANDARLO EN RED
