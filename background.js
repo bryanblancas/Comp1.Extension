@@ -184,13 +184,22 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 	console.log("PATRON CREADO EN BITES: "+patternChaffing.join('')+ "  "+patternChaffing.length);
 	let patroninBytes = arrayBytesToBites(patternChaffing, false);
 	console.log("PATRON CREADO CON CARACTERES ESPECIALES: "+patroninBytes+"   "+patroninBytes.length);
+	
+	var encrypt = new JSEncrypt();
+	encrypt.setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA22s3pNaYYILMQzYh7U8u4S6m6/hyXjG0wa05UcCVS9ty3XyqgnFpp/bDdV7tm/eO21hoWaq8wLoPQttoME35J0na19GKNu1/hC6NkXYf5Jrs2zytnLe3UtJLU6+j2OUpiWshp6RV8WYUHZNHNdSi1eyQcn1OzAb2hWVH70hzkZsoHRNTuymeBy077u8Aj3DVWIwWofoeAd63OIbvRE4awemubwmgzG2SKZwwRJUfP+TG4UBP4LA5TAK+puekfOFnsthPw9K1n/Ugw34r59BakmNVqgfeACPjFTHqd+8YHOL1SKwKmKofLvCJPsISxGtxIntadf5tgTXvlRmtv2SGJwIDAQAB");
+	var encrypted = encrypt.encrypt(patroninBytes);
+	
+	console.log(encrypted);
+
 	/*
 		POR EL MOMENTO CODIFICADO EN BASE 64 PARA PODER MANDARLO EN RED
 		MÁS ADELANTE ESTO SE TENDRÍA QUE CAMBIAR A IMPLEMENTAR EL CIFRADO ASIMÉTRICO
-	*/
+	
 	patroninBytes = base64_encode(patroninBytes);
 	console.log("PATRÓN CREADO (BASE64): "+patroninBytes+ "  "+patroninBytes.length);
-	
+	*/
+
+
 	//SE AGREGA UN NUEVO HEADER DE PATTERN
 	details.requestHeaders.push({name:"Pattern",value: patroninBytes});
 
