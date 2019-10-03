@@ -285,6 +285,26 @@ function mostrarMensajeSuccess(titulo='', mensaje='') {
 	});
 }
 
+$('#verificarCertificado').click(()=>{
+	$.ajax({
+		type: 'POST',
+		url: IP.getIP()+'verificarCertificado',
+		dataType: 'json',
+		async: false,
+		data: {
+			'usuario': '840f374f1824bbb22eb39c67e953f69c2aff64ad24cf45076c6446f3588b98e9',
+			'certificado': 'ff41a1cd42c3c2ca685c042a2945cedc62263cf39b142673c27be8092875578a'
+			//'certificado': 'ff41a1cd42c3c2ca685c042a2945cedr62263cf39b142673c27be8092875578a'
+		},
+		success: function(data){
+			alert('Success: '+data.status);
+		},
+		error: function(data){
+			alert('Error: '+data.status);
+		}
+	});
+});
+
 $('#pRevocarCertificado').click(() => {
 
 	window.open('../../webPage/revocacion.html',"_self");

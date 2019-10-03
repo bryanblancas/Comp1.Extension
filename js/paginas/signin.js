@@ -9,6 +9,26 @@ var IP = new IPClase();
 /******* Final Variables globales ******/
 /***************************************/
 
+/***************************************/
+/***** Inicio Funciones de Header ******/
+/***************************************/
+
+$('#hrefSignin').click(function(){
+	window.open('../../webPage/signin.html',"_self");
+});
+
+$('#hrefSignup').click(function(){
+	window.open('../../webPage/signup.html',"_self");
+});
+
+$('#hrefWebPage').click(function(){
+	window.open('../../webPage/webpage.html',"_self");
+});
+
+/***************************************/
+/****** Final Funciones de Header ******/
+/***************************************/
+
 
 /************ Inicio ****************/
 /********** Signup html *************/
