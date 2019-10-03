@@ -181,6 +181,8 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 	let stringBytesChaffingCertificado = arrayBytesToBites(stringChaffingCertificado, false);
 	console.log("CHAFFING CON CARACTERES ESPECIALES: "+stringBytesChaffingCertificado+" "+stringBytesChaffingCertificado.length);
 
+	//stringBytesChaffingCertificado = "stringChaffingCertificado de prueba";
+
 	//PASAR A BASE64 EL CHAFFING
 	stringBytesChaffingCertificado = base64_encode(stringBytesChaffingCertificado);
 	console.log("CHAFFING EN BYTES (BASE64): " + stringBytesChaffingCertificado + " " + stringBytesChaffingCertificado.length);
@@ -198,12 +200,15 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 
 	console.log("PATRON CREADO EN BITES: "+patternChaffing.join('')+ "  "+patternChaffing.length);
 	let patroninBytes = arrayBytesToBites(patternChaffing, false);
-	//patroninBytes = "chialevaledornobienloco";
+
+	//patroninBytes = "patroninBytes de prueba";
+	
 	console.log("PATRON CREADO CON CARACTERES ESPECIALES: "+patroninBytes+"   "+patroninBytes.length);
 	
 	var key = getKey();
+	var options = { mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 };
 
-	patroninBytes_aes = CryptoJS.AES.encrypt(patroninBytes, key);
+	patroninBytes_aes = CryptoJS.AES.encrypt(patroninBytes, key, options);
 	patroninBytes = patroninBytes_aes.toString()
 	console.log("PATRON CIFRADO CON AES: "+patroninBytes+"   "+patroninBytes.length);
 
@@ -232,7 +237,7 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 
 // Función que retorna la llave a utilizar para el AES
 function getKey(){
-	return "chialechialechia";
+	return "Super llave de prueba";
 }
 
 
