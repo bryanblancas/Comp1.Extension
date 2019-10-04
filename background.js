@@ -52,7 +52,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 			}
 		}
 		},
-	{urls: ["*://localhost/login"]},
+	{urls: ["*://25.7.126.53/login"]},
 	["blocking", "requestHeaders"]
 );
 
