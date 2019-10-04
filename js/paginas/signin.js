@@ -76,7 +76,7 @@ $('#btnSignin').click(function(){
 		console.log(usuarioLogin);
 		$.ajax({
 			type: 'POST',
-			url: IP.getIP()+'ObtenerCertificadoUsuario',
+			url: IP.getIP()+'ObtenerCertificado',
 			dataType: 'json',
 			data: {
 				'email': usuarioLogin.email,

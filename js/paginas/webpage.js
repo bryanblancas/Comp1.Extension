@@ -72,7 +72,7 @@ $('#login').click(function(){
 
 		$.ajax({
 			type: 'POST',
-			url: IP.getIP()+'obtenerCertificadoUsuario',
+			url: IP.getIP()+'obtenerCertificado',
 			dataType: 'json',
 			async: false,
 			data: {
@@ -292,12 +292,14 @@ $('#verificarCertificado').click(()=>{
 		dataType: 'json',
 		async: false,
 		data: {
-			'usuario': '840f374f1824bbb22eb39c67e953f69c2aff64ad24cf45076c6446f3588b98e9',
-			'certificado': 'ff41a1cd42c3c2ca685c042a2945cedc62263cf39b142673c27be8092875578a'
-			//'certificado': 'ff41a1cd42c3c2ca685c042a2945cedr62263cf39b142673c27be8092875578a'
+			'usuario': '840f374f1824bbb22eb39c67e953f69c2aff64ad24cf45076c6446f3588b98e9'
 		},
 		success: function(data){
 			alert('Success: '+data.status);
+			if(data.status == 1){
+				console.log('Certificado (Hash)');
+				console.log(data.certificado);
+			}
 		},
 		error: function(data){
 			alert('Error: '+data.status);
