@@ -285,8 +285,8 @@ function mostrarMensajeSuccess(titulo='', mensaje='') {
 	});
 }
 
-$('#verificarCertificado').click(()=>{
-	$.ajax({
+$('#botonPrueba').click(()=>{
+	/*$.ajax({
 		type: 'POST',
 		url: IP.getIP()+'verificarCertificado',
 		dataType: 'json',
@@ -303,6 +303,19 @@ $('#verificarCertificado').click(()=>{
 		},
 		error: function(data){
 			alert('Error: '+data.status);
+		}
+	});*/
+	$.ajax({
+		type: 'POST',
+		url: IP.getIP()+'Localidades',
+		dataType: 'json',
+		async: false,
+		//data: {},
+		success: function(data){
+			console.log(data);
+		},
+		error: function(data){
+			
 		}
 	});
 });
