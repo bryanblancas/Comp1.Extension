@@ -51,7 +51,7 @@ $('#hrefSignup').click(function(){
 
 $(document).ready(function(){
 	$('#selectPais,#selectEstado,#selectLocalidad,#selectCP,#selectDireccion').select2();
-	$('#selectEstado,#selectLocalidad,#selectCP,#selectDireccion').prop('disabled','disabled');
+	$('#selectEstado,#selectLocalidad,#selectCP,#selectDireccion,#InputCalle').prop('disabled','disabled');
 	$('#selectEstado,#selectLocalidad,#selectCP,#selectDireccion').html('<option value="0" selected>Sin Seleccionar</option>');
 
 	chrome.storage.local.get(['cert'],function(result){
@@ -210,6 +210,13 @@ function cargarDireccion() {
 	});
 }
 
+$('#selectDireccion').on('change',function(){
+	if($('#selectDireccion').val() == 0 || $('#selectDireccion').val() == null){}else{
+		$('#InputCalle').removeAttr('disabled');
+	}
+});
+
+
 $('#btnContinuar').click(function(){
 	if(comprobarUserName($('#username').val()) == false){
 		mostrarMensajeError('Nombre de usuario incorrecto','El formato del nombre de usuario no es valido');
@@ -244,6 +251,8 @@ $('#btnSignup').click(function(){
 		mostrarMensajeError('','Porfavor ingrese un código postal');
 	}else if($('#selectDireccion').val() == null){
 		mostrarMensajeError('','Porfavor ingrese una dirección');
+	}else if($('#InputCalle').val().length == 0){
+		mostrarMensajeError('','Porfavor ingrese una calle y numero');
 	}else{
 		nuevoUsuario.username = $('#username').val();
 		nuevoUsuario.email = $('#email').val();
@@ -255,7 +264,7 @@ $('#btnSignup').click(function(){
 		nuevoUsuario.estado = $('#selectEstado').val();
 		nuevoUsuario.localidad = $('#selectLocalidad').val();
 		nuevoUsuario.codigoPostal = $('#selectCP').val();
-		nuevoUsuario.direccion = $('#selectDireccion').val();
+		nuevoUsuario.direccion = $('#InputCalle').val() + ' ' +$('#selectDireccion').val();
 
 		if($('#organizacion').val().length != 0){
 			nuevoUsuario.organizacionNombre = $('#organizacion').val();
