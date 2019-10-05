@@ -92,6 +92,9 @@ function cargarPais() {
 
 $('#selectPais').on('change',function(){
 	if($('#selectPais').val() == 0 || $('#selectPais').val() == null){}else{
+		$('#selectEstado,#selectLocalidad,#selectCP,#selectDireccion').html('<option value="0" selected>Seleccione</option>');
+		$('#selectEstado,#selectLocalidad,#selectCP,#selectDireccion').prop('disabled','disabled');
+		$('#InputCalle').val('');
 		cargarEstado();
 	}
 });
@@ -121,6 +124,9 @@ function cargarEstado() {
 
 $('#selectEstado').on('change',function(){
 	if($('#selectEstado').val() == 0 || $('#selectEstado').val() == null){}else{
+		$('#selectLocalidad,#selectCP,#selectDireccion').html('<option value="0" selected>Seleccione</option>');
+		$('#selectLocalidad,#selectCP,#selectDireccion').prop('disabled','disabled');
+		$('#InputCalle').val('');
 		cargarLocalidad();
 	}
 });
@@ -151,6 +157,9 @@ function cargarLocalidad() {
 
 $('#selectLocalidad').on('change',function(){
 	if($('#selectLocalidad').val() == 0 || $('#selectLocalidad').val() == null){}else{
+		$('#selectCP,#selectDireccion').html('<option value="0" selected>Seleccione</option>');
+		$('#selectCP,#selectDireccion').prop('disabled','disabled');
+		$('#InputCalle').val('');
 		cargarCodigoPostal();
 	}
 });
@@ -182,6 +191,7 @@ function cargarCodigoPostal() {
 
 $('#selectCP').on('change',function(){
 	if($('#selectCP').val() == 0 || $('#selectCP').val() == null){}else{
+		$('#InputCalle').val('');
 		cargarDireccion();
 	}
 });
@@ -202,9 +212,10 @@ function cargarDireccion() {
 		var datos = data.direccion;
 		$('#selectDireccion').html('<option value="0" selected>Seleccione</option>');
 		$('#selectDireccion').append('<option value="'+datos+'" selected>'+datos+'</option>');
-		$('#selectDireccion').val(0);
+		$('#selectDireccion').val(datos);
 		$('#selectDireccion').trigger('change');
 		$('#selectDireccion option[value=0]').prop('disabled','disabled');
+		$('#selectDireccion').prop('disabled','disabled');
 	}).fail(function(xhr, status, error){
 		mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
 	});
@@ -212,6 +223,7 @@ function cargarDireccion() {
 
 $('#selectDireccion').on('change',function(){
 	if($('#selectDireccion').val() == 0 || $('#selectDireccion').val() == null){}else{
+		$('#InputCalle').val('');
 		$('#InputCalle').removeAttr('disabled');
 	}
 });
