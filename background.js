@@ -52,7 +52,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 			}
 		}
 		},
-	{urls: ["*://localhost/login"]},
+	{urls: ["*://25.7.126.53/login"]},
 	["blocking", "requestHeaders"]
 );
 
@@ -201,7 +201,7 @@ function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details)
 	console.log("PATRON CREADO EN BITES: "+patternChaffing.join('')+ "  "+patternChaffing.length);
 	let patroninBytes = arrayBytesToBites(patternChaffing, false);
 
-	//patroninBytes = "patroninBytes de prueba";
+	//patroninBytes = "stringChaffingCertificado de prueba";
 	
 	console.log("PATRON CREADO CON CARACTERES ESPECIALES: "+patroninBytes+"   "+patroninBytes.length);
 	
