@@ -307,10 +307,12 @@ $('#botonPrueba').click(()=>{
 	});*/
 	$.ajax({
 		type: 'POST',
-		url: IP.getIP()+'Localidades',
+		url: IP.getIP()+'Localidades/obtenerPrueba',
 		dataType: 'json',
 		async: false,
-		//data: {},
+		data: {
+			codigoPostalReq: '07600'
+		},
 		success: function(data){
 			console.log(data);
 		},

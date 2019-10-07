@@ -41,7 +41,7 @@
     </nav>
     <div class="col-md-12">
         <!-- Nav tabs -->
-        <ul id="tabs" class="nav nav-tabs" role="tablist" style="display:none">
+        <ul id="tabs" class="nav nav-tabs" role="tablist" style="display: none">
             <li role="presentation" class="active"><a href="#usuario" role="tab" data-toggle="tab">Datos de Usuario</a></li>
             &nbsp&nbsp&nbsp
             <li role="presentation"><a href="#certificado" role="tab" data-toggle="tab">Datos de Certificado</a></li>
@@ -97,107 +97,99 @@
             <div role="tabpanel" class="tab-pane fade" id="certificado">
                 <div class="col-md-4" style="margin:auto">
                     <div class="card mt-4">
-                        <img class="card-img-top mt-2" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 25%; height: 25%; margin:auto">
+                        <img class="card-img-top mt-2" id="imgChWCertificado" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 25%; height: 25%; margin:auto">
                         <div class="card-body">
                             <div style="text-align: center"><strong>La siguiente información nos ayudará a la creación de su certificado</strong></div>
                             <div class="form-group">
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Nombre del país:</strong>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <select id="selectPais" style="width: 100%">
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Nombre de su Estado o Provincia:</strong>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <select id="selectEstado" style="width: 100%">
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Nombre de su Localidad:</strong>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <select id="selectLocalidad" style="width: 100%">
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="margin-bottom: 5%">
+                                <div style="margin-top: 5%; margin-bottom: 5%">
                                     <div class="card-text">
                                         <strong>Codigo postal:</strong>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12">
-                                            <select id="selectCP" style="width: 100%">
-                                            </select>
+                                        <div class="col-md-9">
+                                            <input type="text" id="InputCP" name="InputCP" placeholder="Código Postal" class="form-control" value="" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button id="btnBuscarCP" type="button" class="btn btn-secondary btn-block">Buscar</button>
                                         </div>
                                     </div>
-                                </div>  
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Direccion:</strong>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <select id="selectDireccion" style="width: 100%">
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Calle y Numero:</strong>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <input type="text" id="InputCalle" name="InputCalle" placeholder="Calle y Numero" class="form-control" value="" required>
-                                        </div>
-                                    </div>
-                                </div>
+                                </div> 
                                 <hr/>
-                                <div class="card-text">
-                                    <div class="row">
-                                        <div class="col-md-10">
-                                            Opcional
-                                        </div>
-                                        <div class="col-md-1" id="imgMostrarOpAvanzadasAbajo">
-                                            <img src="../img/flechaAbajo.png" alt="Opciones avanzadas" title="Opciones avanzadas" width="15px" height="15px" style="cursor: pointer">
-                                        </div>
-                                        <div class="col-md-1 d-md-none" id="imgMostrarOpAvanzadasArriba">
-                                            <img src="../img/flechaArriba.png" alt="Opciones avanzadas" title="Opciones avanzadas" width="15px" height="15px" style="cursor: pointer">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="OpcionesAvanzadas" style="display:none">
+                                <div id="divLocalidad" style="display:none">
                                     <div style="margin-bottom: 5%">
                                         <div class="card-text">
-                                            <strong>Nombre de su organización:</strong>
+                                            <strong>Estado:</strong>
                                         </div>
-                                        <input type="organizacion" id="organizacion" name="organizacion" placeholder="Instituto Politécnico Nacional" class="form-control" value="" required>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <input type="text" id="InputEstado" name="InputEstado" placeholder="" class="form-control" value="" required>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div style="margin-bottom: 5%">
                                         <div class="card-text">
-                                            <strong>Nombre de su organización abreviado:</strong>
+                                            <strong>Municipio:</strong>
                                         </div>
-                                        <input type="organizacionAbrev" id="organizacionAbrev" name="organizacionAbrev" placeholder="IPN" class="form-control" value="" required>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <input type="text" id="InputMunicipio" name="InputMunicipio" placeholder="" class="form-control" value="" required>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div style="margin-bottom: 5%">
                                         <div class="card-text">
-                                            <strong>Nombre de su dominio:</strong>
+                                            <strong>Colonia:</strong>
                                         </div>
-                                        <input type="dominio" id="dominio" name="dominio" placeholder="ejemplo.com" class="form-control" value="" required>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <select id="selectColonia" style="width: 100%">
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom: 5%">
+                                        <div class="card-text">
+                                            <strong>Calle y Numero:</strong>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <input type="text" id="InputCalle" name="InputCalle" class="form-control" value="" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="card-text">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                Opcional
+                                            </div>
+                                            <div class="col-md-1" id="imgMostrarOpAvanzadasAbajo">
+                                                <img src="../img/flechaAbajo.png" alt="Opciones avanzadas" title="Opciones avanzadas" width="15px" height="15px" style="cursor: pointer">
+                                            </div>
+                                            <div class="col-md-1 d-md-none" id="imgMostrarOpAvanzadasArriba">
+                                                <img src="../img/flechaArriba.png" alt="Opciones avanzadas" title="Opciones avanzadas" width="15px" height="15px" style="cursor: pointer">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="OpcionesAvanzadas" style="display:none">
+                                        <div style="margin-bottom: 5%">
+                                            <div class="card-text">
+                                                <strong>Nombre de su organización:</strong>
+                                            </div>
+                                            <input type="organizacion" id="organizacion" name="organizacion" placeholder="Instituto Politécnico Nacional" class="form-control" value="" required>
+                                        </div>
+                                        <div style="margin-bottom: 5%">
+                                            <div class="card-text">
+                                                <strong>Nombre de su organización abreviado:</strong>
+                                            </div>
+                                            <input type="organizacionAbrev" id="organizacionAbrev" name="organizacionAbrev" placeholder="IPN" class="form-control" value="" required>
+                                        </div>
+                                        <div style="margin-bottom: 5%">
+                                            <div class="card-text">
+                                                <strong>Nombre de su dominio:</strong>
+                                            </div>
+                                            <input type="dominio" id="dominio" name="dominio" placeholder="ejemplo.com" class="form-control" value="" required>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">

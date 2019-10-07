@@ -11,9 +11,9 @@ var nuevoUsuario = {
 	localidad: '',
 	codigoPostal: '',
 	direccion: '',
-	organizacionNombre: 'Indefinido',
-	organizacionAbreviado: 'Indefinido',
-	dominio: 'indefinido.com'
+	organizacionNombre: 'null',
+	organizacionAbreviado: 'null',
+	dominio: 'null'
 };
 var IP = new IPClase();
 
@@ -50,9 +50,11 @@ $('#hrefSignup').click(function(){
 });*/
 
 $(document).ready(function(){
-	$('#selectPais,#selectEstado,#selectLocalidad,#selectCP,#selectDireccion').select2();
-	$('#selectEstado,#selectLocalidad,#selectCP,#selectDireccion,#InputCalle').prop('disabled','disabled');
-	$('#selectEstado,#selectLocalidad,#selectCP,#selectDireccion').html('<option value="0" selected>Sin Seleccionar</option>');
+	$('#selectColonia').select2();
+	$('#selectColonia').html('<option value="0" selected>Sin Seleccionar</option>');
+	$('#selectColonia').prop('disabled','disabled');
+	$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').prop('disabled','disabled');
+	$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').val('Sin Seleccionar');
 
 	chrome.storage.local.get(['cert'],function(result){
 		if(result.cert != null){
@@ -64,170 +66,55 @@ $(document).ready(function(){
 			$('#hrefSignup,#hrefSignin').attr('style','cursor:pointer');
 		}
 	});	
-
-	cargarPais();
 	
 });
 
-function cargarPais() {
+$('#btnBuscarCP').on('click', function() {
+	//$('#selectColonia').html('<option value="0" selected>Sin Seleccionar</option>');
+	//$('#selectColonia').prop('disabled','disabled');
+	//$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').prop('disabled','disabled');
+	//$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').val('Sin Seleccionar');
 	$.ajax({
 		type: 'POST',
-		url: IP.getIP()+'Localidades/Pais',
-		dataType: 'json',
-	}).done(function(data){
-		var datos = data.paises;
-		var keys = Object.keys(datos);
-		var valores = Object.values(datos);
-		$('#selectPais').html('<option value="0" selected>Seleccione</option>');
-		for(let i=0;i<keys.length;i++){
-			$('#selectPais').append('<option value="'+keys[i]+'" selected>'+valores[i]+'</option>');
-		}
-		$('#selectPais').val(0);
-		$('#selectPais option[value=0]').prop('disabled','disabled');
-		$('#selectPais').trigger('change');
-	}).fail(function(xhr, status, error){
-		mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
-	});
-}
-
-$('#selectPais').on('change',function(){
-	if($('#selectPais').val() == 0 || $('#selectPais').val() == null){}else{
-		$('#selectEstado,#selectLocalidad,#selectCP,#selectDireccion').html('<option value="0" selected>Seleccione</option>');
-		$('#selectEstado,#selectLocalidad,#selectCP,#selectDireccion').prop('disabled','disabled');
-		$('#InputCalle').val('');
-		cargarEstado();
-	}
-});
-
-function cargarEstado() {
-	$('#selectEstado').removeAttr('disabled');
-	$.ajax({
-		type: 'POST',
-		url: IP.getIP()+'Localidades/Estado',
+		url: IP.getIP()+'Localidades/obtenerDatos',
 		dataType: 'json',
 		data:{
-			pais: $('#selectPais').val()
+			codigoPostalReq: $('#InputCP').val()
+		},
+		beforeSend: function(){
+			console.log('Entro');
+			$('#imgChWCertificado').attr('class','card-img-top mt-2 rotate');
+		},
+	}).done(function(datos){
+		datos = datos.datos;
+		console.log(datos);
+		if(datos.estado.length != 0){
+			$('#selectColonia, #InputCalle').removeAttr('disabled');
+			$('#InputCalle').val('');
+			$('#InputEstado').val(datos.estado);
+			$('#InputMunicipio').val(datos.municipio);
+			var colonias = datos.colonias;
+			for(var i=0;i<colonias.length;i++){
+				$('#selectColonia').append('<option value="'+colonias[i]+'">'+colonias[i]+'</option>');
+			}
+			$('#selectColonia').val(0);
+			$('#selectColonia').trigger('change');
+			$('#selectColonia option[value=0]').prop('disabled','disabled');
+			$('#divLocalidad').attr('style','display:inline');
+			$('#imgChWCertificado').attr('class','card-img-top mt-2');
+		}else{
+			$('#selectColonia').html('<option value="0" selected>Sin Seleccionar</option>');
+			$('#selectColonia').prop('disabled','disabled');
+			$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').prop('disabled','disabled');
+			$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').val('Sin Seleccionar');
+			$('#imgChWCertificado').attr('class','card-img-top mt-2');
+			mostrarMensajeError('Código Postal invalido', 'Por favor ingrese un código postal valido');	
 		}
-	}).done(function(data){
-		var datos = data.estados;
-		$('#selectEstado').html('<option value="0" selected>Seleccione</option>');
-		for(let i=0;i<datos.length;i++){
-			$('#selectEstado').append('<option value="'+datos[i]+'" selected>'+datos[i]+'</option>');
-		}
-		$('#selectEstado').val(0);
-		$('#selectEstado').trigger('change');
-		$('#selectEstado option[value=0]').prop('disabled','disabled');
 	}).fail(function(xhr, status, error){
+		$('#imgChWCertificado').attr('class','card-img-top mt-2');
 		mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
 	});
-}
-
-$('#selectEstado').on('change',function(){
-	if($('#selectEstado').val() == 0 || $('#selectEstado').val() == null){}else{
-		$('#selectLocalidad,#selectCP,#selectDireccion').html('<option value="0" selected>Seleccione</option>');
-		$('#selectLocalidad,#selectCP,#selectDireccion').prop('disabled','disabled');
-		$('#InputCalle').val('');
-		cargarLocalidad();
-	}
 });
-
-function cargarLocalidad() {
-	$('#selectLocalidad').removeAttr('disabled');
-	$.ajax({
-		type: 'POST',
-		url: IP.getIP()+'Localidades/Localidad',
-		dataType: 'json',
-		data:{
-			pais: $('#selectPais').val(),
-			estado: $('#selectEstado').val()
-		}
-	}).done(function(data){
-		var datos = data.localidades;
-		$('#selectLocalidad').html('<option value="0" selected>Seleccione</option>');
-		for(let i=0;i<datos.length;i++){
-			$('#selectLocalidad').append('<option value="'+datos[i]+'" selected>'+datos[i]+'</option>');
-		}
-		$('#selectLocalidad').val(0);
-		$('#selectLocalidad').trigger('change');
-		$('#selectLocalidad option[value=0]').prop('disabled','disabled');
-	}).fail(function(xhr, status, error){
-		mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
-	});
-}
-
-$('#selectLocalidad').on('change',function(){
-	if($('#selectLocalidad').val() == 0 || $('#selectLocalidad').val() == null){}else{
-		$('#selectCP,#selectDireccion').html('<option value="0" selected>Seleccione</option>');
-		$('#selectCP,#selectDireccion').prop('disabled','disabled');
-		$('#InputCalle').val('');
-		cargarCodigoPostal();
-	}
-});
-
-function cargarCodigoPostal() {
-	$('#selectCP').removeAttr('disabled');
-	$.ajax({
-		type: 'POST',
-		url: IP.getIP()+'Localidades/CodigoPostal',
-		dataType: 'json',
-		data:{
-			pais: $('#selectPais').val(),
-			estado: $('#selectEstado').val(),
-			localidad: $('#selectLocalidad').val()
-		}
-	}).done(function(data){
-		var datos = data.codigoPostal;
-		$('#selectCP').html('<option value="0" selected>Seleccione</option>');
-		for(let i=0;i<datos.length;i++){
-			$('#selectCP').append('<option value="'+datos[i]+'" selected>'+datos[i]+'</option>');
-		}
-		$('#selectCP').val(0);
-		$('#selectCP').trigger('change');
-		$('#selectCP option[value=0]').prop('disabled','disabled');
-	}).fail(function(xhr, status, error){
-		mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
-	});
-}
-
-$('#selectCP').on('change',function(){
-	if($('#selectCP').val() == 0 || $('#selectCP').val() == null){}else{
-		$('#InputCalle').val('');
-		cargarDireccion();
-	}
-});
-
-function cargarDireccion() {
-	$('#selectDireccion').removeAttr('disabled');
-	$.ajax({
-		type: 'POST',
-		url: IP.getIP()+'Localidades/Direccion',
-		dataType: 'json',
-		data:{
-			pais: $('#selectPais').val(),
-			estado: $('#selectEstado').val(),
-			localidad: $('#selectLocalidad').val(),
-			cp: $('#selectCP').val()
-		}
-	}).done(function(data){
-		var datos = data.direccion;
-		$('#selectDireccion').html('<option value="0" selected>Seleccione</option>');
-		$('#selectDireccion').append('<option value="'+datos+'" selected>'+datos+'</option>');
-		$('#selectDireccion').val(datos);
-		$('#selectDireccion').trigger('change');
-		$('#selectDireccion option[value=0]').prop('disabled','disabled');
-		$('#selectDireccion').prop('disabled','disabled');
-	}).fail(function(xhr, status, error){
-		mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
-	});
-}
-
-$('#selectDireccion').on('change',function(){
-	if($('#selectDireccion').val() == 0 || $('#selectDireccion').val() == null){}else{
-		$('#InputCalle').val('');
-		$('#InputCalle').removeAttr('disabled');
-	}
-});
-
 
 $('#btnContinuar').click(function(){
 	if(comprobarUserName($('#username').val()) == false){
@@ -253,18 +140,16 @@ $('#btnRegresar').click(function(){
 });
 
 $('#btnSignup').click(function(){
-	if($('#selectPais').val() == null){
-		mostrarMensajeError('','Porfavor seleccione una ciudad');
-	}else if($('#selectEstado').val() == null){
-		mostrarMensajeError('','Porfavor ingrese un estado');
-	}else if($('#selectLocalidad').val() == null){
-		mostrarMensajeError('','Porfavor ingrese una localidad');
-	}else if($('#selectCP').val() == null){
+	if($('#InputCP').val().length == 0){
 		mostrarMensajeError('','Porfavor ingrese un código postal');
-	}else if($('#selectDireccion').val() == null){
-		mostrarMensajeError('','Porfavor ingrese una dirección');
+	}else if($('#InputEstado').val().length == 0){
+		mostrarMensajeError('','Porfavor ingrese un Estado');
+	}else if($('#InputMunicipio').val().length == 0){
+		mostrarMensajeError('','Porfavor ingrese un Municipio');
+	}else if($('#selectColonia').val() == null || $('#selectColonia').val() == 0){
+		mostrarMensajeError('','Porfavor seleccione una Colonia');
 	}else if($('#InputCalle').val().length == 0){
-		mostrarMensajeError('','Porfavor ingrese una calle y numero');
+		mostrarMensajeError('','Porfavor ingrese una Calle y Número');
 	}else{
 		nuevoUsuario.username = $('#username').val();
 		nuevoUsuario.email = $('#email').val();
@@ -272,11 +157,11 @@ $('#btnSignup').click(function(){
 		var hash = CryptoJS.SHA256($('#password').val()).toString();
 		nuevoUsuario.contrasenia = hash;
 
-		nuevoUsuario.ciudad = $('#selectPais').val();
-		nuevoUsuario.estado = $('#selectEstado').val();
-		nuevoUsuario.localidad = $('#selectLocalidad').val();
-		nuevoUsuario.codigoPostal = $('#selectCP').val();
-		nuevoUsuario.direccion = $('#InputCalle').val() + ' ' +$('#selectDireccion').val();
+		nuevoUsuario.ciudad = 'MX';
+		nuevoUsuario.estado = $('#InputEstado').val();
+		nuevoUsuario.localidad = $('#InputMunicipio').val();
+		nuevoUsuario.codigoPostal = $('#InputCP').val();
+		nuevoUsuario.direccion = $('#InputCalle').val() + ' ' + $('#selectColonia').val();
 
 		if($('#organizacion').val().length != 0){
 			nuevoUsuario.organizacionNombre = $('#organizacion').val();
