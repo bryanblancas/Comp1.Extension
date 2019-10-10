@@ -3,10 +3,30 @@
 /***************************************/
 
 var usuarioLogin = {email: '', contrasenia: ''};
-var IP = 'https://25.7.11.142:3000/api/';
+var IP = new IPClase();
 
 /***************************************/
 /******* Final Variables globales ******/
+/***************************************/
+
+/***************************************/
+/***** Inicio Funciones de Header ******/
+/***************************************/
+
+$('#hrefSignin').click(function(){
+	window.open('../../webPage/signin.html',"_self");
+});
+
+$('#hrefSignup').click(function(){
+	window.open('../../webPage/signup.html',"_self");
+});
+
+$('#hrefWebPage').click(function(){
+	window.open('../../webPage/webpage.html',"_self");
+});
+
+/***************************************/
+/****** Final Funciones de Header ******/
 /***************************************/
 
 
@@ -14,30 +34,34 @@ var IP = 'https://25.7.11.142:3000/api/';
 /********** Signup html *************/
 /************************************/
 
-/*$(document).ready(function() {
+$(document).ready(function(){
 	chrome.storage.local.get(['cert'],function(result){
 		if(result.cert != null){
-			window.close();
+			//Existe un certificado
+			$('#hrefSignup,#hrefSignin').attr('style','display:none');
+			$('#btnSignin,#email,#password').attr('disabled','disabled');
+		}else{
+			//No existe un certificado
+			$('#hrefSignup,#hrefSignin').attr('style','cursor:pointer');
 		}
 	});	
-});*/
+});
+
+function quitarEncabezadosCertificado(certificado) {
+	crt = certificado.split('-----BEGIN CERTIFICATE-----')[1];
+	crt = crt.split('-----END CERTIFICATE-----')[0];
+	return crt;
+}
 
 $('#btnSignin').click(function(){	
-	if(comprobarEmail($('#email').val()) == false){
-		mostrarMensaje('Email incorrecto','El formato de email no es valido','error');
-	}
-	else if(comprobarPassword($('#password').val()) == false){
-		mostrarMensaje('Contraseña incorrecta','El formato de la contraseña no es valido','error');
-	}
-	else{
+	if($('#email').val().length > 0 && $('#password').val().toString().length > 0){
 		usuarioLogin.email = $('#email').val();
 		usuarioLogin.contrasenia = $('#password').val();
 		var hash = CryptoJS.SHA256($('#password').val()).toString();
 		usuarioLogin.contrasenia = hash;
-		console.log(usuarioLogin);
 		$.ajax({
 			type: 'POST',
-			url: IP+'obtenerCertificado',
+			url: IP.getIP()+'ObtenerCertificado',
 			dataType: 'json',
 			data: {
 				'email': usuarioLogin.email,
@@ -46,29 +70,29 @@ $('#btnSignin').click(function(){
 			beforeSend: function(){
 				$('#imgChW').attr('class','card-img-top mt-2 rotate');
 			},
-		}).done(function(data){
-			console.log(data);
-			if(data.status == 0){
+			success: function(data){
+				if(data.status == 0){
+					$('#imgChW').attr('class','card-img-top mt-2');
+					mostrarMensajeError('','Usuario y/o contraseña no validos');
+				}else{
+					crt = quitarEncabezadosCertificado(data.certificado);
+					/*Se guarda en Storage*/
+					chrome.storage.local.set({cert: crt});
+					chrome.storage.local.get(['cert'],function(result){
+						if(result.cert != null){
+							$('#imgChW').attr('class','card-img-top mt-2');
+							mostrarMensajeSuccess('','Sesión iniciada con éxito');
+						}else{
+							$('#imgChW').attr('class','card-img-top mt-2');
+							mostrarMensajeError('Ha ocurrido un problema','Por favor, intentelo mas tarde');
+						}
+					});
+				}
+			},
+			error: function(){
 				$('#imgChW').attr('class','card-img-top mt-2');
-				mostrarMensaje('Usuario no valido','','error');
-			}else{
-				/*Se guarda en Storage*/
-				chrome.storage.local.set({cert: data.certificado});
-				chrome.storage.local.get(['cert'],function(result){
-					if(result.cert != null){
-						console.log(result.cert);
-						$('#imgChW').attr('class','card-img-top mt-2');
-						mostrarMensaje('Certificado obtenido','El certificado ha sido guardado en el Storage de Google Chrome','success');
-					}else{
-						$('#imgChW').attr('class','card-img-top mt-2');
-						mostrarMensaje('Certificado no obtenido','El certificado no ha sido guardado en el Storage de Google Chrome','error');
-					}
-				});
+				mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
 			}
-		}).fail(function(data){
-			//console.log(data);
-			$('#imgChW').attr('class','card-img-top mt-2');
-			mostrarMensaje('Ah ocurrido un error', 'Por favor intentelo mas tarde','error');
 		});
 	}
 });
@@ -83,77 +107,28 @@ $('#imgEye').click(function(){
 	}
 });
 
-$('#email').keyup(function(){
-	if($('#email').val().length == 0){
-		$('#regexEmail').html('');
-	}else{
-		if(comprobarEmail($('#email').val())){
-			$('#regexEmail').attr('style','color:green');
-			$('#regexEmail').html('Correcto');
-		}else{
-			$('#regexEmail').attr('style','color:red');
-			$('#regexEmail').html('Incorrecto');
+function mostrarMensajeError(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'error',
+		confirmButtonColor: '#3085d6',
+		confirmButtonText: 'Aceptar'
+	});
+}
+
+function mostrarMensajeSuccess(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'success',
+		confirmButtonText: 'Aceptar'
+	}).then((result) => {
+		if(result.value){
+			$('#hrefWebPage').click();
 		}
-	}
-});
-
-$('#password').keyup(function(){
-	if (event.keyCode === 13) {
-		$('#btnSignin').click();
-	}else if($('#password').val().length == 0){
-		$('#regexPassword').html('');
-	}else{
-		if(comprobarPassword($('#password').val())){
-			$('#regexPassword').attr('style','color:green');
-			$('#regexPassword').html('Correcto');
-		}else{
-			$('#regexPassword').attr('style','color:red');
-			$('#regexPassword').html('Incorrecto');
-		}
-	}
-});
-
-function comprobarEmail(email) {
-	re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-	return re.test(email);
+	});
 }
-
-function comprobarPassword(password) {
-	regexpass = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d_@#?/]+$/;
-	if( password == null || password.length < 8 || password.length > 16 || !regexpass.test(password)) {
-		return false;
-  	}else{
-		return true;
-	}
-}
-
-function mostrarMensaje(titulo='', mensaje='', tipo='') {
-	if(tipo == 'warning'){
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			cancelButtonText: 'Cancelar',
-			confirmButtonText: 'Si, continuar!'
-		  }).then((result) => {
-			if (result.value) {
-				confirmarUsuario();
-			}
-		});
-	}else{
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			confirmButtonText: 'Aceptar'
-		});
-	}
-}
-
-
 
 /************* Final ****************/
 /********** Signup html *************/

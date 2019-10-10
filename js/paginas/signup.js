@@ -2,8 +2,12 @@
 /****** Inicio Variables globales ******/
 /***************************************/
 
-var nuevoUsuario = {username: '', email: '', contrasenia: ''};
-var IP = 'https://25.7.11.142:3000/api/';
+var nuevoUsuario = {
+	username: '', 
+	email: '', 
+	contrasenia: ''
+};
+var IP = new IPClase();
 
 /***************************************/
 /******* Final Variables globales ******/
@@ -29,41 +33,52 @@ $('#hrefSignup').click(function(){
 /********** Signup html *************/
 /************************************/
 
-/*$(document).ready(function() {
+$(document).ready(function(){
+	$('#selectColonia').select2();
+	$('#selectColonia').html('<option value="0" selected>Sin Seleccionar</option>');
+	$('#selectColonia').prop('disabled','disabled');
+	$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').prop('disabled','disabled');
+	$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').val('Sin Seleccionar');
+
 	chrome.storage.local.get(['cert'],function(result){
 		if(result.cert != null){
-			window.close();
+			//Existe un certificado
+			$('#hrefSignup,#hrefSignin').attr('style','display:none');
+			$('#email,#password,#username,#passwordRepetir,#btnContinuar').attr('disabled','disabled');
+		}else{
+			//No existe un certificado
+			$('#hrefSignup,#hrefSignin').attr('style','cursor:pointer');
 		}
 	});	
-});*/
+	
+});
 
 $('#btnSignup').click(function(){
 	if(comprobarUserName($('#username').val()) == false){
-		mostrarMensaje('Nombre de usuario incorrecto','El formato del nombre de usuario no es valido','error');
+		mostrarMensajeError('Nombre de usuario incorrecto','El formato del nombre de usuario no es valido');
 	}
 	else if(comprobarEmail($('#email').val()) == false){
-		mostrarMensaje('Email incorrecto','El formato de email no es valido','error');
+		mostrarMensajeError('Email incorrecto','El formato de email no es valido');
 	}
 	else if(comprobarPassword($('#password').val()) == false){
-		mostrarMensaje('Contraseña incorrecta','El formato de la contraseña no es valido','error');
+		mostrarMensajeError('Contraseña incorrecta','El formato de la contraseña no es valido');
 	}
 	else if($('#password').val() != $('#passwordRepetir').val()){
-		mostrarMensaje('Contraseñas no validas','Las contraseñas introducidas no coinciden','error');
+		mostrarMensajeError('Contraseñas incorrectas','Las contraseñas introducidas no coinciden');
 	}else{
 		nuevoUsuario.username = $('#username').val();
 		nuevoUsuario.email = $('#email').val();
 		nuevoUsuario.contrasenia = $('#password').val();
 		var hash = CryptoJS.SHA256($('#password').val()).toString();
 		nuevoUsuario.contrasenia = hash;
-		mostrarMensaje('¿Está seguro?','Se registrará usuario actual','warning');
+		mostrarMensajeConfirmacion('¿Desea continuar?','Se registrará usuario actual');
 	}
 });
 
 function confirmarUsuario() {
-	console.log(nuevoUsuario);
 	$.ajax({
 		type: 'POST',
-		url: IP+'guardarUsuario',
+		url: IP.getIP()+'guardarUsuario',
 		dataType: 'json',
 		data: {
 			'username': nuevoUsuario.username,
@@ -73,31 +88,29 @@ function confirmarUsuario() {
 		beforeSend: function(){
 			$('#imgChW').attr('class','card-img-top mt-2 rotate');
 		},
-	}).done(function(data){
-		console.log(data);
-		if(data.status == 0){
+		success: function(data){
+			if(data.status == 0){
+				$('#imgChW').attr('class','card-img-top mt-2');
+				mostrarMensajeError('','Usuario no registrado');	
+			}else{
+				$('#imgChW').attr('class','card-img-top mt-2');
+				Swal.fire({
+					title: 'Nuevo Usuario Registrado',
+					text: "Se ha creado nuevo usuario con correo email: "+data.email,
+					type: 'success',
+					confirmButtonColor: '#3085d6',				
+					confirmButtonText: 'Iniciar Sesión'
+				}).then((result) => {
+					if (result.value) {
+						$('#hrefSignin').click();
+					}
+				})
+			}
+		},
+		error: function(){
 			$('#imgChW').attr('class','card-img-top mt-2');
-			mostrarMensaje('Usuario no creado',data.email,'error');	
-		}else{
-			$('#imgChW').attr('class','card-img-top mt-2');
-			//mostrarMensaje('Nuevo Usuario Creado', 'Email: '+data.email,'success');
-			/*Se guarda en Storage*/
-			//chrome.storage.local.set({cert: null});
-			Swal.fire({
-				title: 'Nuevo Usuario Creado',
-				text: "Email: "+data.email,
-				type: 'success',
-				confirmButtonColor: '#3085d6',				
-				confirmButtonText: 'Iniciar Sesión'
-			  }).then((result) => {
-				if (result.value) {
-					$('#hrefSignin').click();
-				}
-			  })
+			mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
 		}
-	}).fail(function(xhr, status, error){
-		$('#imgChW').attr('class','card-img-top mt-2');
-		mostrarMensaje('Ah ocurrido un error', 'Por favor intentelo mas tarde','error');
 	});
 }
 
@@ -105,18 +118,6 @@ $('#passwordRepetir').keyup(function(){
 	if($('#passwordRepetir').val().length == 0){
 		$('#passwordRepetir').removeAttr('type');
 		$('#passwordRepetir').attr('type','password');
-	}else if($('#password').val() == '' || $('#passwordRepetir').val() == ''){
-		$('#matchPassword').html('');
-	}else{
-		if($('#passwordRepetir').val() == $('#password').val()){
-			//$('#matchPassword').html('');
-			$('#matchPassword').attr('style','color:green');
-			$('#matchPassword').html('Match');
-		}else{
-			//$('#matchPassword').html('');
-			$('#matchPassword').attr('style','color:red');
-			$('#matchPassword').html('Diferente');
-		}
 	}
 });
 
@@ -124,20 +125,6 @@ $('#password').keyup(function(){
 	if($('#password').val().length == 0){
 		$('#password').removeAttr('type');
 		$('#password').attr('type','password');
-	}else if($('#password').val() == '' || $('#passwordRepetir').val() == ''){
-		$('#matchPassword').html('');
-	}else{
-		if($('#passwordRepetir').val() == $('#password').val()){
-			//$('#matchPassword').html('');
-			$('#matchPassword').attr('style','color:green');
-			$('#matchPassword').html('Match');
-		}else{
-			if($('#passwordRepetir').val() != ''){
-				//$('#matchPassword').html('');
-				$('#matchPassword').attr('style','color:red');
-				$('#matchPassword').html('Diferente');
-			}
-		}
 	}
 });
 
@@ -158,48 +145,6 @@ $('#imgEyeRepetir').click(function(){
 	}else{
 		$('#passwordRepetir').removeAttr('type');
 		$('#passwordRepetir').attr('type','password');
-	}
-});
-
-$('#username').keyup(function(){
-	if($('#username').val().length == 0){
-		$('#regexUsername').html('');
-	}else{
-		if(comprobarUserName($('#username').val())){
-			$('#regexUsername').attr('style','color:green');
-			$('#regexUsername').html('Correcto');
-		}else{
-			$('#regexUsername').attr('style','color:red');
-			$('#regexUsername').html('Incorrecto');
-		}
-	}
-});
-
-$('#email').keyup(function(){
-	if($('#email').val().length == 0){
-		$('#regexEmail').html('');
-	}else{
-		if(comprobarEmail($('#email').val())){
-			$('#regexEmail').attr('style','color:green');
-			$('#regexEmail').html('Correcto');
-		}else{
-			$('#regexEmail').attr('style','color:red');
-			$('#regexEmail').html('Incorrecto');
-		}
-	}
-});
-
-$('#password').keyup(function(){
-	if($('#password').val().length == 0){
-		$('#regexPassword').html('');
-	}else{
-		if(comprobarPassword($('#password').val())){
-			$('#regexPassword').attr('style','color:green');
-			$('#regexPassword').html('Correcto');
-		}else{
-			$('#regexPassword').attr('style','color:red');
-			$('#regexPassword').html('Incorrecto');
-		}
 	}
 });
 
@@ -226,32 +171,32 @@ function comprobarPassword(password) {
 	}
 }
 
-function mostrarMensaje(titulo='', mensaje='', tipo='') {
-	if(tipo == 'warning'){
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			cancelButtonText: 'Cancelar',
-			confirmButtonText: 'Si, continuar!'
-		  }).then((result) => {
-			if (result.value) {
-				confirmarUsuario();
-			}
-		});
-	}else{
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			confirmButtonText: 'Aceptar'
-		});
-	}
+function mostrarMensajeError(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'error',
+		confirmButtonColor: '#3085d6',
+		confirmButtonText: 'Aceptar'
+	});
 }
 
+function mostrarMensajeConfirmacion(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		cancelButtonText: 'Cancelar',
+		confirmButtonText: 'Si, continuar!'
+		}).then((result) => {
+		if (result.value) {
+			confirmarUsuario();
+		}
+	});
+}
 
 /************* Final ****************/
 /********** Signup html *************/

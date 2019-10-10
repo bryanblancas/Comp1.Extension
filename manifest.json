@@ -12,7 +12,7 @@
 		"default_title": "TT_Project_ESCOM"
 	},
 	"background": {
-	    "scripts": ["background.js", "js/jQuery/jquery-3.3.1.js"],
+	    "scripts": ["js/jQuery/jquery-3.3.1.js", "js/CryptoJs/CryptoJs.js","js/rsa/jsencrypt.min.js","background.js"],
 	    "persistent" : true
 	},
 	"minimum_chrome_version": "18",
