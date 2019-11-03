@@ -35,16 +35,22 @@ $('#hrefWebPage').click(function(){
 /************************************/
 
 $(document).ready(function(){
+	$('body').hide();
 	chrome.storage.local.get(['cert'],function(result){
 		if(result.cert != null){
 			//Existe un certificado
 			$('#hrefSignup,#hrefSignin').attr('style','display:none');
 			$('#btnSignin,#email,#password').attr('disabled','disabled');
+			$('#conCertificado').attr('style','display:inline');
+			$('#sinCertificado').attr('style','display:none');
 		}else{
 			//No existe un certificado
 			$('#hrefSignup,#hrefSignin').attr('style','cursor:pointer');
+			$('#conCertificado').attr('style','display:none');
+			$('#sinCertificado').attr('style','display:inline');
 		}
 	});	
+	$('body').fadeIn(100);
 });
 
 function quitarEncabezadosCertificado(certificado) {
@@ -73,7 +79,7 @@ $('#btnSignin').click(function(){
 			success: function(data){
 				if(data.status == 0){
 					$('#imgChW').attr('class','card-img-top mt-2');
-					mostrarMensajeError('','Usuario y/o contraseña no validos');
+					mostrarMensajeError('Usuario y/o contraseña no validos','Favor de verificar email y/o contraseña');
 				}else{
 					crt = quitarEncabezadosCertificado(data.certificado);
 					/*Se guarda en Storage*/
@@ -81,7 +87,7 @@ $('#btnSignin').click(function(){
 					chrome.storage.local.get(['cert'],function(result){
 						if(result.cert != null){
 							$('#imgChW').attr('class','card-img-top mt-2');
-							mostrarMensajeSuccess('','Sesión iniciada con éxito');
+							mostrarMensajeSuccess('Sesión iniciada con éxito');
 						}else{
 							$('#imgChW').attr('class','card-img-top mt-2');
 							mostrarMensajeError('Ha ocurrido un problema','Por favor, intentelo mas tarde');
@@ -94,6 +100,21 @@ $('#btnSignin').click(function(){
 				mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
 			}
 		});
+	}else{
+		mostrarMensajeError('Datos incorrectos','Por favor, ingrese email y/o contraseña correctos');
+	}
+});
+
+$('.cerrarVentana').click(function(){
+	window.close();
+});
+
+$('#password').keyup(function(event){
+	if (event.keyCode === 13) {
+		$('#btnSignin').click();
+	}else if($('#password').val().length == 0){
+		$('#password').removeAttr('type');
+		$('#password').attr('type','password');
 	}
 });
 

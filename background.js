@@ -52,7 +52,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 			}
 		}
 		},
-	{urls: ["*://10.100.64.236/login"]},
+	{urls: ["*://25.7.126.53/login"]},
 	["blocking", "requestHeaders"]
 );
 

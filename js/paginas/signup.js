@@ -34,34 +34,40 @@ $('#hrefSignup').click(function(){
 /************************************/
 
 $(document).ready(function(){
+	$('body').hide();
 	$('#selectColonia').select2();
 	$('#selectColonia').html('<option value="0" selected>Sin Seleccionar</option>');
 	$('#selectColonia').prop('disabled','disabled');
 	$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').prop('disabled','disabled');
 	$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').val('Sin Seleccionar');
-
+	
 	chrome.storage.local.get(['cert'],function(result){
 		if(result.cert != null){
 			//Existe un certificado
 			$('#hrefSignup,#hrefSignin').attr('style','display:none');
 			$('#email,#password,#username,#passwordRepetir,#btnContinuar').attr('disabled','disabled');
+			$('#conCertificado').attr('style','display:inline');
+			$('#sinCertificado').attr('style','display:none');
 		}else{
 			//No existe un certificado
 			$('#hrefSignup,#hrefSignin').attr('style','cursor:pointer');
+			$('#conCertificado').attr('style','display:none');
+			$('#sinCertificado').attr('style','display:inline');
 		}
 	});	
-	
+	$('body').fadeIn(100);
 });
 
 $('#btnSignup').click(function(){
+
 	if(comprobarUserName($('#username').val()) == false){
-		mostrarMensajeError('Nombre de usuario incorrecto','El formato del nombre de usuario no es valido');
+		mostrarMensajeError('Nombre de usuario incorrecto','El nombre de usuario introducido no es valido');
 	}
 	else if(comprobarEmail($('#email').val()) == false){
-		mostrarMensajeError('Email incorrecto','El formato de email no es valido');
+		mostrarMensajeError('Email incorrecto','El email introducido no es valido');
 	}
 	else if(comprobarPassword($('#password').val()) == false){
-		mostrarMensajeError('Contraseña incorrecta','El formato de la contraseña no es valido');
+		mostrarMensajeError('Contraseña incorrecta','La contraseña introducida no es valida');
 	}
 	else if($('#password').val() != $('#passwordRepetir').val()){
 		mostrarMensajeError('Contraseñas incorrectas','Las contraseñas introducidas no coinciden');
@@ -91,12 +97,12 @@ function confirmarUsuario() {
 		success: function(data){
 			if(data.status == 0){
 				$('#imgChW').attr('class','card-img-top mt-2');
-				mostrarMensajeError('','Usuario no registrado');	
+				mostrarMensajeError('Usuario no registrado','El usuario con correo email: '+data.email+' no ha sido creado');
 			}else{
 				$('#imgChW').attr('class','card-img-top mt-2');
 				Swal.fire({
 					title: 'Nuevo Usuario Registrado',
-					text: "Se ha creado nuevo usuario con correo email: "+data.email,
+					text: "El usuario con correo email: "+data.email+" ha sido creado con éxito",
 					type: 'success',
 					confirmButtonColor: '#3085d6',				
 					confirmButtonText: 'Iniciar Sesión'
@@ -113,6 +119,10 @@ function confirmarUsuario() {
 		}
 	});
 }
+
+$('.cerrarVentana').click(function(){
+	window.close();
+});
 
 $('#passwordRepetir').keyup(function(){
 	if($('#passwordRepetir').val().length == 0){

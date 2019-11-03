@@ -31,16 +31,22 @@ $('#hrefSignup').click(function(){
 /************************************/
 
 $(document).ready(function(){
+	$('body').hide();
 	chrome.storage.local.get(['cert'],function(result){
 		if(result.cert != null){
 			//Existe un certificado
 			$('#hrefSignup,#hrefSignin').attr('style','display:none');
 			$('#btnRevocar,#email,#password').attr('disabled','disabled');
+			$('#conCertificado').attr('style','display:inline');
+			$('#sinCertificado').attr('style','display:none');
 		}else{
 			//No existe un certificado
 			$('#hrefSignup,#hrefSignin').attr('style','cursor:pointer');
+			$('#conCertificado').attr('style','display:none');
+			$('#sinCertificado').attr('style','display:inline');
 		}
 	});	
+	$('body').fadeIn(100);
 });
 
 $('#btnRevocar').click(function(){	
@@ -50,6 +56,8 @@ $('#btnRevocar').click(function(){
         var hash = CryptoJS.SHA256($('#password').val()).toString();
         usuarioLogin.contrasenia = hash;
 		mostrarMensajeWarning('¿Esta seguro que desea revocar su certificado?','Este proceso no podrá revertirse');
+	}else{
+		mostrarMensajeError('Datos incorrectos','Por favor, ingrese email y/o contraseña correctos');
 	}
 });
 
@@ -80,6 +88,10 @@ function mensajeConfirmacion() {
 		}
 	});
 }
+
+$('.cerrarVentana').click(function(){
+	window.close();
+});
 
 $('#imgEye').click(function(){
 	if($('#password').attr('type') == 'password' && $('#password').val().length > 0){

@@ -60,8 +60,7 @@ $('#btnCerrarSesion').click(function(){
 	
 	Swal.fire({
 		text: 'Se ha cerrado sesión exitosamente',
-		width: 200,
-		height: 150
+		width: 200
 	});
 });
 
