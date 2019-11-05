@@ -1,6 +1,3 @@
-//console.log("Background");
-
-
 // Variable que guarda el valor actual del botón "activar"
 var btnActivar = "";
 
@@ -52,7 +49,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 			}
 		}
 		},
-	{urls: ["*://10.100.64.236/login"]},
+	{urls: ["*://localhost/login"]},
 	["blocking", "requestHeaders"]
 );
 
@@ -79,57 +76,173 @@ function getCertificateFromStorage(cabeceraInyectar, details) {
 
 // Función que realiza el proceso de chaffing
 function chaffingProcess(certificadoCharArray, cabeceraInyectar, details) {
+	// cert = certificadoCharArray.replace('\r\n', '');
+	// cert = cert.replace('\r', '');
 
-	//let patternChaffing = getPattern(certificadoCharArray.length , cabeceraInyectar.length);
-	//certificadoCharArray = "5";
+	//REMOVE ESPECIAL CHARACTERS 
+	cert = []
+	for(let i = 0; i < certificadoCharArray.length; i++){
+		let code = certificadoCharArray.charCodeAt(i)
+		if(!((code >= 0 && code <= 31) || code == 127))
+			cert.push(certificadoCharArray[i])
+	}
+
+	// certificadoCharArray = "5\n";
 	//cabeceraInyectar = "t";
-	let patternChaffing = getPatternBite(certificadoCharArray.length , cabeceraInyectar.length);
+	
+	let rtn = getPattern(950, 1050);
+	let pattern = rtn[0];
+	let ones = rtn[1];
 
-	// newHeader: objeto que contendrá la nueva cabecera a mandar
-	// incluye el patrón de chaffing y el chaffing al header
-	// USER-AGENT está en posición 3
-	// PATTERN está en posición 4
-	//let newHeader = makeChaffing(patternChaffing,certificadoCharArray,cabeceraInyectar,details);
-	let newHeader = makeChaffingBite(patternChaffing,certificadoCharArray,cabeceraInyectar,details);
+	// console.log(pattern)
+	// console.log(ones)
+
+	//let newHeader = makeChaffingBite(patternChaffing,certificadoCharArray,cabeceraInyectar,details);
 	//console.log("NUEVA PETICIÓN HTTP: ");
 	//console.log(newHeader);
+	
+	let chaffing = makeChaffing(pattern, cert, ones);
+	// console.log(chaffing);
 
 	//Liberación de la petición
-	setFreeRequest(newHeader);
+	freeRequest(details, chaffing, pattern, cert.length);
 }
 
 
-// Función que crea el patrón aleatoriamente, cuya longitud es la longitud 
-// del certificado más la longitud de la cabecera a inyectar por ocho puesto que es bite a bite 
-function getPatternBite(LenCertificadoCharArray, LenCabeceraInyectar){
-
-	let lengthPc = (LenCabeceraInyectar+LenCertificadoCharArray)*8;
+// Function que retorna un patrón para el chaffing versión PROTOTIPO 2
+function getPattern(low, high){
+	let diff = high - low;
+	let ones =  Math.floor(Math.random() * diff) + low; 
+	let	size = 245*8;
 	
-	// pcArray: contiene el patrón de chaffing 
-	// pcArray [byteControl, biteChaff, biteChaff, ..., biteChaff]
-	// 0 -> Bite Chaff : 1 -> Bite Original
+	let pattern = []
+	for(let i = 0; i < size; i++)
+		pattern[i] = 0;
 
-	let pcArray = new Array(lengthPc);
-	pcArray.fill(1,0,lengthPc);
-	
-	let n_0 = 0;
-	while(n_0 < LenCertificadoCharArray*8){
-
-		let random = getSecureRandomNumber() % lengthPc; // valores [0,lengthPc)
-		//random++; // Evitamos posición 0
-		if(pcArray[random] == 1){
-			pcArray[random] = 0;
-			n_0++;
-		}
-
+	let i = 0;
+	while(i < ones){
+	 	let x = getSecureRandomNumber() % size;
+	 	if(pattern[x] == 1)
+	 		continue;
+	 	pattern[x] = 1;
+	 	i++;
 	}
 
-/*
-	console.log("Número de ceros en pattern: "+n_0-1);
-	console.log("PATRÓN CREADO EN BITES: "+pcArray.join("")+" "+pcArray.length);
-*/
+	return [pattern, ones];
+}
 
-	return pcArray;
+
+// Función que realiza el proceso de chaffing 
+function makeChaffing(pattern, certificadoCharArray, ones){
+
+	// pattern = [0,1,0,1]
+	// certificadoCharArray = ['a', 'b', '\n']
+	// ones = 2
+
+	let len_cert = certificadoCharArray.length;
+	let len_pattern = pattern.length
+	let rep = Math.ceil(len_cert/ones);
+	
+	let chaffing = []
+
+	let cont_cert = 0
+	let flag = true
+
+	for(let i = 0; i < rep; i++){
+		for(let cont_pattern = 0; cont_pattern < len_pattern; cont_pattern++){
+
+			if(flag == false){
+				chaffing.push(fakeChar());
+				continue
+			}
+
+			if(pattern[cont_pattern] == 1){
+				chaffing.push(certificadoCharArray[cont_cert]);
+				cont_cert++;
+				if(cont_cert >= len_cert)
+					flag = false;
+			}
+			else
+				chaffing.push(fakeChar());
+		}
+	}
+
+	return chaffing;
+}
+
+
+// Función que retorna un caracter / a-z A-Z 0-9
+function fakeChar(){
+	// /-9
+	let char1 = Math.floor(Math.random() * 10) + 47;
+	// A-Z
+	let char2 = Math.floor(Math.random() * 25) + 65;
+	// a-a
+	let char3 = Math.floor(Math.random() * 25) + 97;
+
+	let a = Math.floor(Math.random() * 3);
+
+	switch(a){
+		case 0:
+			return String.fromCharCode(char1);
+		case 1:
+			return String.fromCharCode(char2);
+		case 2:
+			return String.fromCharCode(char3);
+	}	
+}
+
+
+// Función que libera la nueva petición con el chaffing y pattern dados
+function freeRequest(details, chaffing, pattern, len_cert){
+    
+
+    const url = details.url;
+    chaffing = chaffing.join('');
+    pattern = pattern.join('');
+
+
+
+    // pattern = text 
+    // pattern = "01110100011001010111100001110100"
+    pattern = arrayBytesToBites(pattern, 0);
+    chaffing = chaffing+" "+len_cert;
+
+
+    // CIFRADO DE PATRÓN
+    var encrypt = new JSEncrypt();
+	encrypt.setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1fsvhHzUiUB20kciWsdCPf9gBiI6Z2cXnOH+VMkQtwXYhWyf0VXnV/cXGieXS5HvrZJvb0ldo8ZSqkaBy9BXrIAFswTgOxWfusa3nmL6YRzIHxI6FgpAt9xQAIKtnEWMShsufS/7FeR8Yam/u2qI2u+kM00ZPKQPOZPGQvEjy2QX88k/r88jP2a5UPzkSfg1vuAwMxGrVSuPcGrAUd2qJF6Slb1y6KvSo2KYLdnpv/us5MRKO+28u2QNr++uMIkyJz4Pqj67VUT2r1XThkdxAfPTgcRne15qQ2aDtlLqw8T6uo2xYNekZjuoUxenfxzikv3ejFgShT4bON6yzBtv0wIDAQAB");
+	var pattern_encrypted = encrypt.encrypt(pattern); 
+
+
+
+	// IMPRESIONES EN PANTALLA
+    console.log("DIRECCIÓN: \n"+url)
+    console.log("CHAFFING: \n"+chaffing)
+    // console.log("PATTERN: \n"+pattern)
+    console.log("PATTERN ENCRYPTED: \n"+pattern_encrypted)
+
+
+	//LIBERACIÓN DE LA PETICIÓN POR MEDIO DE AJAX 
+	$.ajax({
+		url: url,
+		type: "GET",
+		contentType: "text/plain;charset=UTF-8",
+		datatype: 'text/plain',
+		headers: {
+			"Chaffing" : chaffing,
+			"Pattern" : pattern_encrypted
+		},
+		success:function(result){
+			console.log("ÉXITO AL ENVIAR PETICIÓN, IMPRIMIENDO RESPUESTA: ");
+            console.log(result);
+            window.open(result);
+		},
+		error:function(result){
+			console.log("ERROR AL ENVIAR PETICIÓN, IMPRIMIENDO RESPUESTA: ");
+			console.log(result);
+		}
+	})
 }
 
 
@@ -143,185 +256,6 @@ function getSecureRandomNumber() {
     var array = new Uint16Array(10);
     window.crypto.getRandomValues(array);
     return array[Math.floor(Math.random() * 10)];
-}
-
-
-// Función que realiza el chaffing con base a el patrón (patternChaffing)
-// si hay un 0 en el patrón, se coloca un carácter del certificado
-// si hay un 1 en el patrón, se coloca un carácter de la cabecera 
-function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details){
-	
-	// stringChaffingCertificado : almacenará el chaffing entre el encabezado Accept y el Certificado
-	let stringChaffingCertificado = "";
-	let stringCabeceraInyectar = stringToBinaryString(cabeceraInyectar);
-	let stringCertArray = stringToBinaryString(certArray);
-
-	let contPcCharTot = 0; 		// 	contador de Certificado + Encabezado
-	let contCertificado = 0; 	// 	contador para certificado
-	let contEncabezado = 0; 	// 	contador para encabezado Mozilla
-	
-	while(contPcCharTot < patternChaffing.length){
-		if(patternChaffing[contPcCharTot] == 0)
-			stringChaffingCertificado += stringCertArray[contCertificado++]
-			//arrayChaffingCertificado[contPcCharTot] =  certArray[contCertificado++];
-		else
-			stringChaffingCertificado += stringCabeceraInyectar[contEncabezado++];
-		contPcCharTot++;
-	}
-
-
-	/*
-		
-		PARA CHAFFING
-
-	*/
-
-	console.log("CHAFFING CREADO EN BITES: "+stringChaffingCertificado+ "   "+stringChaffingCertificado.length);
-
-	let stringBytesChaffingCertificado = arrayBytesToBites(stringChaffingCertificado, false);
-	console.log("CHAFFING CON CARACTERES ESPECIALES: "+stringBytesChaffingCertificado+" "+stringBytesChaffingCertificado.length);
-
-	//stringBytesChaffingCertificado = "stringChaffingCertificado de prueba";
-
-	//PASAR A BASE64 EL CHAFFING
-	stringBytesChaffingCertificado = base64_encode(stringBytesChaffingCertificado);
-	console.log("CHAFFING EN BYTES (BASE64): " + stringBytesChaffingCertificado + " " + stringBytesChaffingCertificado.length);
-
-	//SE AGREGA UN NUEVO HEADER
-	details.requestHeaders.push({name:"Chaffing",value: stringBytesChaffingCertificado});
-
-
-	/*
-	
-		PARA PATTERN
-
-	*/
-
-
-	console.log("PATRON CREADO EN BITES: "+patternChaffing.join('')+ "  "+patternChaffing.length);
-	let patroninBytes = arrayBytesToBites(patternChaffing, false);
-
-	//patroninBytes = "stringChaffingCertificado de prueba";
-	
-	console.log("PATRON CREADO CON CARACTERES ESPECIALES: "+patroninBytes+"   "+patroninBytes.length);
-	
-	var key = getKey();
-	var options = { mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 };
-
-	patroninBytes_aes = CryptoJS.AES.encrypt(patroninBytes, key, options);
-	patroninBytes = patroninBytes_aes.toString()
-	console.log("PATRON CIFRADO CON AES: "+patroninBytes+"   "+patroninBytes.length);
-
-	var encrypt = new JSEncrypt();
-	encrypt.setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1fsvhHzUiUB20kciWsdCPf9gBiI6Z2cXnOH+VMkQtwXYhWyf0VXnV/cXGieXS5HvrZJvb0ldo8ZSqkaBy9BXrIAFswTgOxWfusa3nmL6YRzIHxI6FgpAt9xQAIKtnEWMShsufS/7FeR8Yam/u2qI2u+kM00ZPKQPOZPGQvEjy2QX88k/r88jP2a5UPzkSfg1vuAwMxGrVSuPcGrAUd2qJF6Slb1y6KvSo2KYLdnpv/us5MRKO+28u2QNr++uMIkyJz4Pqj67VUT2r1XThkdxAfPTgcRne15qQ2aDtlLqw8T6uo2xYNekZjuoUxenfxzikv3ejFgShT4bON6yzBtv0wIDAQAB");
-	var encrypted = encrypt.encrypt(key);
-
-	patroninBytes += " ";
-	patroninBytes += encrypted.toString();
-
-	/*
-		POR EL MOMENTO CODIFICADO EN BASE 64 PARA PODER MANDARLO EN RED
-		MÁS ADELANTE ESTO SE TENDRÍA QUE CAMBIAR A IMPLEMENTAR EL CIFRADO ASIMÉTRICO
-	
-	patroninBytes = base64_encode(patroninBytes);
-	console.log("PATRÓN CREADO (BASE64): "+patroninBytes+ "  "+patroninBytes.length);
-	*/
-
-
-	//SE AGREGA UN NUEVO HEADER DE PATTERN
-	details.requestHeaders.push({name:"Pattern",value: patroninBytes});
-
-	return details;
-}
-
-
-// Función que retorna la llave a utilizar para el AES
-function getKey(){
-	return "Super llave de prueba";
-}
-
-
-// Función que retorna una cadena de caracteres 0 y 1
-// String = "text"
-// Return = "0110100011001010111100001110100"
-function stringToBinaryString(string){
-	let i = 0;
-	let binaryString = ""
-	for(i; i < string.length; i++)
-		binaryString += charToBinaryString(string[i]);
-	return binaryString;
-}
-
-
-// Funcion que retorna una cadena de 0 y 1
-// Char = "t"
-// Return = "01110100"
-function charToBinaryString(char){
-	let num = char.charCodeAt(0);
-	return intToBinaryString(num);
-}
-
-
-//Function que retorna una cadena de 0 y 1
-// int = 0x74
-// Return = "01110100"
-function intToBinaryString(int){
-	let mask = 0x80;
-	let string = "";
-	while(mask > 0){
-		if((int & mask) != 0)
-			string += '1';
-		else
-			string += '0';
-		mask = mask >> 1;
-	}
-
-	return string;
-}
-
-
-// Función que libera la nueva petición (newHeader)
-function setFreeRequest(newHeader){
-	var pattern = "";
-    var chaff = "";
-    const url = newHeader.url;
-
-    for(i = 0; i < newHeader.requestHeaders.length; i++){
-        if(newHeader.requestHeaders[i].name.includes("Chaffing")){
-            chaff = newHeader.requestHeaders[i].value;
-            break;
-        }
-    }
-
-    for(i = 0; i < newHeader.requestHeaders.length; i++){
-        if(newHeader.requestHeaders[i].name.includes("Pattern")){
-            pattern = newHeader.requestHeaders[i].value;
-            break;
-        }
-    }
-
-    console.log(newHeader);
-
-	//Liberación de la petición por medio de AJAX 
-	$.ajax({
-		url: url,
-		type: "GET",
-		contentType: "text/plain;charset=UTF-8",
-		datatype: 'text/plain',
-		headers: {
-			"Chaffing" : chaff,
-			"Pattern" : pattern
-		},
-		success:function(result){
-			console.log("ÉXITO AL ENVIAR PETICIÓN, IMPRIMIENDO RESPUESTA: ");
-            console.log(result);
-            window.open(result);
-		},
-		error:function(result){
-			console.log("ERROR AL ENVIAR PETICIÓN, IMPRIMIENDO RESPUESTA: ");
-			console.log(result);
-		}
-	})
 }
 
 
@@ -373,40 +307,260 @@ function arrayBytesToBites(array, patron){
 }
 
 
+// // Función de codifica la cadena s dada a base64.
+// function base64_encode (s){
+//   // the result/encoded string, the padding string, and the pad count
+//   var base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+//   var r = ""; 
+//   var p = ""; 
+//   var c = s.length % 3;
 
-// Función de codifica la cadena s dada a base64.
-function base64_encode (s){
-  // the result/encoded string, the padding string, and the pad count
-  var base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  var r = ""; 
-  var p = ""; 
-  var c = s.length % 3;
+//   // add a right zero pad to make this string a multiple of 3 characters
+//   if (c > 0) { 
+//     for (; c < 3; c++) { 
+//       p += '='; 
+//       s += "\0"; 
+//     } 
+//   }
 
-  // add a right zero pad to make this string a multiple of 3 characters
-  if (c > 0) { 
-    for (; c < 3; c++) { 
-      p += '='; 
-      s += "\0"; 
-    } 
-  }
+//   // increment over the length of the string, three characters at a time
+//   for (c = 0; c < s.length; c += 3) {
 
-  // increment over the length of the string, three characters at a time
-  for (c = 0; c < s.length; c += 3) {
+//     // we add newlines after every 76 output characters, according to the MIME specs
+//     /*if (c > 0 && (c / 3 * 4) % 76 == 0) { 
+//       r += "\r\n"; 
+//     }*/
 
-    // we add newlines after every 76 output characters, according to the MIME specs
-    /*if (c > 0 && (c / 3 * 4) % 76 == 0) { 
-      r += "\r\n"; 
-    }*/
+//     // these three 8-bit (ASCII) characters become one 24-bit number
+//     var n = (s.charCodeAt(c) << 16) + (s.charCodeAt(c+1) << 8) + s.charCodeAt(c+2);
 
-    // these three 8-bit (ASCII) characters become one 24-bit number
-    var n = (s.charCodeAt(c) << 16) + (s.charCodeAt(c+1) << 8) + s.charCodeAt(c+2);
+//     // this 24-bit number gets separated into four 6-bit numbers
+//     n = [(n >>> 18) & 63, (n >>> 12) & 63, (n >>> 6) & 63, n & 63];
 
-    // this 24-bit number gets separated into four 6-bit numbers
-    n = [(n >>> 18) & 63, (n >>> 12) & 63, (n >>> 6) & 63, n & 63];
+//     // those four 6-bit numbers are used as indices into the base64 character list
+//     r += base64chars[n[0]] + base64chars[n[1]] + base64chars[n[2]] + base64chars[n[3]];
+//   }
+//    // add the actual padding string, after removing the zero pad
+//   return r.substring(0, r.length - p.length) + p;
+// }
 
-    // those four 6-bit numbers are used as indices into the base64 character list
-    r += base64chars[n[0]] + base64chars[n[1]] + base64chars[n[2]] + base64chars[n[3]];
-  }
-   // add the actual padding string, after removing the zero pad
-  return r.substring(0, r.length - p.length) + p;
-}
+// // Función que retorna una cadena de caracteres 0 y 1
+// // String = "text"
+// // Return = "0110100011001010111100001110100"
+// function stringToBinaryString(string){
+// 	let i = 0;
+// 	let binaryString = ""
+// 	for(i; i < string.length; i++)
+// 		binaryString += charToBinaryString(string[i]);
+// 	return binaryString;
+// }
+
+
+// // Funcion que retorna una cadena de 0 y 1
+// // Char = "t"
+// // Return = "01110100"
+// function charToBinaryString(char){
+// 	let num = char.charCodeAt(0);
+// 	return intToBinaryString(num);
+// }
+
+
+// //Function que retorna una cadena de 0 y 1
+// // int = 0x74
+// // Return = "01110100"
+// function intToBinaryString(int){
+// 	let mask = 0x80;
+// 	let string = "";
+// 	while(mask > 0){
+// 		if((int & mask) != 0)
+// 			string += '1';
+// 		else
+// 			string += '0';
+// 		mask = mask >> 1;
+// 	}
+
+// 	return string;
+// }
+
+
+
+
+// // Función que retorna la llave a utilizar para el AES
+// function getKey(){
+// 	return "Super llave de prueba";
+// }
+
+
+
+
+
+// // Función que crea el patrón aleatoriamente, cuya longitud es la longitud 
+// // del certificado más la longitud de la cabecera a inyectar por ocho puesto que es bite a bite 
+// function getPatternBite(LenCertificadoCharArray, LenCabeceraInyectar){
+
+// 	let lengthPc = (LenCabeceraInyectar+LenCertificadoCharArray)*8;
+	
+// 	// pcArray: contiene el patrón de chaffing 
+// 	// pcArray [byteControl, biteChaff, biteChaff, ..., biteChaff]
+// 	// 0 -> Bite Chaff : 1 -> Bite Original
+
+// 	let pcArray = new Array(lengthPc);
+// 	pcArray.fill(1,0,lengthPc);
+	
+// 	let n_0 = 0;
+// 	while(n_0 < LenCertificadoCharArray*8){
+
+// 		let random = getSecureRandomNumber() % lengthPc; // valores [0,lengthPc)
+// 		//random++; // Evitamos posición 0
+// 		if(pcArray[random] == 1){
+// 			pcArray[random] = 0;
+// 			n_0++;
+// 		}
+
+// 	}
+
+
+// 	// console.log("Número de ceros en pattern: "+n_0-1);
+// 	// console.log("PATRÓN CREADO EN BITES: "+pcArray.join("")+" "+pcArray.length);
+
+
+// 	return pcArray;
+// }
+
+
+// // Función que realiza el chaffing con base a el patrón (patternChaffing)
+// // si hay un 0 en el patrón, se coloca un carácter del certificado
+// // si hay un 1 en el patrón, se coloca un carácter de la cabecera 
+// function makeChaffingBite(patternChaffing, certArray, cabeceraInyectar, details){
+	
+// 	// stringChaffingCertificado : almacenará el chaffing entre el encabezado Accept y el Certificado
+// 	let stringChaffingCertificado = "";
+// 	let stringCabeceraInyectar = stringToBinaryString(cabeceraInyectar);
+// 	let stringCertArray = stringToBinaryString(certArray);
+
+// 	let contPcCharTot = 0; 		// 	contador de Certificado + Encabezado
+// 	let contCertificado = 0; 	// 	contador para certificado
+// 	let contEncabezado = 0; 	// 	contador para encabezado Mozilla
+	
+// 	while(contPcCharTot < patternChaffing.length){
+// 		if(patternChaffing[contPcCharTot] == 0)
+// 			stringChaffingCertificado += stringCertArray[contCertificado++]
+// 			//arrayChaffingCertificado[contPcCharTot] =  certArray[contCertificado++];
+// 		else
+// 			stringChaffingCertificado += stringCabeceraInyectar[contEncabezado++];
+// 		contPcCharTot++;
+// 	}
+
+
+// 	/*
+		
+// 		PARA CHAFFING
+
+// 	*/
+
+// 	console.log("CHAFFING CREADO EN BITES: "+stringChaffingCertificado+ "   "+stringChaffingCertificado.length);
+
+// 	let stringBytesChaffingCertificado = arrayBytesToBites(stringChaffingCertificado, false);
+// 	console.log("CHAFFING CON CARACTERES ESPECIALES: "+stringBytesChaffingCertificado+" "+stringBytesChaffingCertificado.length);
+
+// 	//stringBytesChaffingCertificado = "stringChaffingCertificado de prueba";
+
+// 	//PASAR A BASE64 EL CHAFFING
+// 	stringBytesChaffingCertificado = base64_encode(stringBytesChaffingCertificado);
+// 	console.log("CHAFFING EN BYTES (BASE64): " + stringBytesChaffingCertificado + " " + stringBytesChaffingCertificado.length);
+
+// 	//SE AGREGA UN NUEVO HEADER
+// 	details.requestHeaders.push({name:"Chaffing",value: stringBytesChaffingCertificado});
+
+
+// 	/*
+	
+// 		PARA PATTERN
+
+// 	*/
+
+
+// 	console.log("PATRON CREADO EN BITES: "+patternChaffing.join('')+ "  "+patternChaffing.length);
+// 	let patroninBytes = arrayBytesToBites(patternChaffing, false);
+
+// 	//patroninBytes = "stringChaffingCertificado de prueba";
+	
+// 	console.log("PATRON CREADO CON CARACTERES ESPECIALES: "+patroninBytes+"   "+patroninBytes.length);
+	
+// 	/*modo ctr*/
+// 	var key = getKey();
+// 	var options = { mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 };
+
+// 	patroninBytes_aes = CryptoJS.AES.encrypt(patroninBytes, key, options);
+// 	patroninBytes = patroninBytes_aes.toString()
+// 	console.log("PATRON CIFRADO CON AES: "+patroninBytes+"   "+patroninBytes.length);
+
+// 	var encrypt = new JSEncrypt();
+
+// 	encrypt.setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1fsvhHzUiUB20kciWsdCPf9gBiI6Z2cXnOH+VMkQtwXYhWyf0VXnV/cXGieXS5HvrZJvb0ldo8ZSqkaBy9BXrIAFswTgOxWfusa3nmL6YRzIHxI6FgpAt9xQAIKtnEWMShsufS/7FeR8Yam/u2qI2u+kM00ZPKQPOZPGQvEjy2QX88k/r88jP2a5UPzkSfg1vuAwMxGrVSuPcGrAUd2qJF6Slb1y6KvSo2KYLdnpv/us5MRKO+28u2QNr++uMIkyJz4Pqj67VUT2r1XThkdxAfPTgcRne15qQ2aDtlLqw8T6uo2xYNekZjuoUxenfxzikv3ejFgShT4bON6yzBtv0wIDAQAB");
+// 	var encrypted = encrypt.encrypt(key);
+
+// 	patroninBytes += " ";
+// 	patroninBytes += encrypted.toString();
+
+// 	/*
+// 		POR EL MOMENTO CODIFICADO EN BASE 64 PARA PODER MANDARLO EN RED
+// 		MÁS ADELANTE ESTO SE TENDRÍA QUE CAMBIAR A IMPLEMENTAR EL CIFRADO ASIMÉTRICO
+	
+// 	patroninBytes = base64_encode(patroninBytes);
+// 	console.log("PATRÓN CREADO (BASE64): "+patroninBytes+ "  "+patroninBytes.length);
+// 	*/
+
+
+// 	//SE AGREGA UN NUEVO HEADER DE PATTERN
+// 	details.requestHeaders.push({name:"Pattern",value: patroninBytes});
+
+// 	return details;
+// }
+
+
+
+
+// // Función que libera la nueva petición (newHeader)
+// function setFreeRequest(newHeader){
+// 	var pattern = "";
+//     var chaff = "";
+//     const url = newHeader.url;
+
+//     for(i = 0; i < newHeader.requestHeaders.length; i++){
+//         if(newHeader.requestHeaders[i].name.includes("Chaffing")){
+//             chaff = newHeader.requestHeaders[i].value;
+//             break;
+//         }
+//     }
+
+//     for(i = 0; i < newHeader.requestHeaders.length; i++){
+//         if(newHeader.requestHeaders[i].name.includes("Pattern")){
+//             pattern = newHeader.requestHeaders[i].value;
+//             break;
+//         }
+//     }
+
+//     console.log(newHeader);
+
+// 	//Liberación de la petición por medio de AJAX 
+// 	$.ajax({
+// 		url: url,
+// 		type: "GET",
+// 		contentType: "text/plain;charset=UTF-8",
+// 		datatype: 'text/plain',
+// 		headers: {
+// 			"Chaffing" : chaff,
+// 			"Pattern" : pattern
+// 		},
+// 		success:function(result){
+// 			console.log("ÉXITO AL ENVIAR PETICIÓN, IMPRIMIENDO RESPUESTA: ");
+//             console.log(result);
+//             window.open(result);
+// 		},
+// 		error:function(result){
+// 			console.log("ERROR AL ENVIAR PETICIÓN, IMPRIMIENDO RESPUESTA: ");
+// 			console.log(result);
+// 		}
+// 	})
+// }
