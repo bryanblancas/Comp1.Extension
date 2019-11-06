@@ -1,6 +1,6 @@
 ﻿{
 	"name": "TT_Project",
-	"version": "1.0",
+	"version": "2.0",
 	"manifest_version": 2,
 	"description": "Keep safe your passwords",
 	"icons": {
@@ -12,7 +12,7 @@
 		"default_title": "TT_Project_ESCOM"
 	},
 	"background": {
-	    "scripts": ["js/jQuery/jquery-3.3.1.js", "js/CryptoJs/CryptoJs.js","js/rsa/jsencrypt.min.js","background.js"],
+	    "scripts": ["js/jQuery/jquery-3.3.1.js","js/rsa/jsencrypt.min.js", "background.js"],
 	    "persistent" : true
 	},
 	"minimum_chrome_version": "18",
