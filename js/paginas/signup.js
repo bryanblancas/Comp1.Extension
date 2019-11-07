@@ -75,8 +75,8 @@ $('#btnSignup').click(function(){
 		nuevoUsuario.username = $('#username').val();
 		nuevoUsuario.email = $('#email').val();
 		nuevoUsuario.contrasenia = $('#password').val();
-		var hash = CryptoJS.SHA256($('#password').val()).toString();
-		nuevoUsuario.contrasenia = hash;
+		// var hash = CryptoJS.SHA256($('#password').val()).toString();
+		// nuevoUsuario.contrasenia = hash;
 		mostrarMensajeConfirmacion('¿Desea continuar?','Se registrará usuario actual');
 	}
 });
