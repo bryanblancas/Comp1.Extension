@@ -3,8 +3,8 @@
 /***************************************/
 
 var usuarioLogin = {email: '', contrasenia: ''};
-var IP = new IPClase();
-/*te invito a echarle ganas*/
+var IP = 'https://25.7.11.142:3000/api/';
+
 /***************************************/
 /******* Final Variables globales ******/
 /***************************************/
@@ -21,10 +21,6 @@ $('#hrefSignup').click(function(){
 	window.open('../../webPage/signup.html',"_self");
 });
 
-$('#hrefWebPage').click(function(){
-	window.open('../../webPage/webpage.html',"_self");
-});
-
 /***************************************/
 /****** Final Funciones de Header ******/
 /***************************************/
@@ -35,31 +31,20 @@ $('#hrefWebPage').click(function(){
 /********** Login html *************/
 /************************************/
 
-$(document).ready(function(){
+/*$(document).ready(function() {
 	chrome.storage.local.get(['cert'],function(result){
 		if(result.cert != null){
-			//Existe un certificado
-			$('#hrefSignup,#hrefSignin,#revocarCertificadoDiv').attr('style','display:none');
-			$('#login,#email,#password').attr('disabled','disabled');
-		}else{
-			//No existe un certificado
-			$('#hrefSignup,#hrefSignin').attr('style','cursor:pointer');
+			window.close();
 		}
 	});	
-});
-
-function quitarEncabezadosCertificado(certificado) {
-	crt = certificado.split('-----BEGIN CERTIFICATE-----')[1];
-	crt = crt.split('-----END CERTIFICATE-----')[0];
-	return crt;
-}
+});*/
 
 $('#login').click(function(){	
 	if(comprobarEmail($('#email').val()) == false){
-		mostrarMensajeError('Email incorrecto','El formato de email no es valido');
+		mostrarMensaje('Email incorrecto','El formato de email no es valido','error');
 	}
 	else if(comprobarPassword($('#password').val()) == false){
-		mostrarMensajeError('Contraseña incorrecta','El formato de la contraseña no es valido');
+		mostrarMensaje('Contraseña incorrecta','El formato de la contraseña no es valido','error');
 	}
 	else{
 		usuarioLogin.email = $('#email').val();
@@ -72,7 +57,7 @@ $('#login').click(function(){
 
 		$.ajax({
 			type: 'POST',
-			url: IP.getIP()+'obtenerCertificado',
+			url: IP+'obtenerCertificado',
 			dataType: 'json',
 			async: false,
 			data: {
@@ -85,19 +70,17 @@ $('#login').click(function(){
 			success: function(data){
 				if(data.status == 0){
 					$('#imgChW').attr('class','card-img-top mt-2');
-					mostrarMensajeError('Usuario no encontrado','El usuario: '+usuarioLogin.email+' no existe');
+					mostrarMensaje('Usuario no valido','','error');
 				}else{
-					crt = quitarEncabezadosCertificado(data.certificado);
-					/*Se guarda en Storage*/
-					chrome.storage.local.set({cert: crt});
+					chrome.storage.local.set({cert: data.certificado});
 					chrome.storage.local.get(['cert'],function(result){
 						if(result.cert != null){
 							$('#imgChW').attr('class','card-img-top mt-2');
-							mostrarMensajeSuccess('Certificado obtenido','El certificado ha sido guardado en el Storage de Google Chrome');
+							mostrarMensaje('Certificado obtenido','El certificado ha sido guardado en el Storage de Google Chrome','success');
 							console.log(result.cert);
 						}else{
 							$('#imgChW').attr('class','card-img-top mt-2');
-							mostrarMensajeError('Certificado no obtenido','El certificado no ha sido guardado en el Storage de Google Chrome');
+							mostrarMensaje('Certificado no obtenido','El certificado no ha sido guardado en el Storage de Google Chrome','error');
 						}
 					});
 				}
@@ -115,7 +98,7 @@ $('#login').click(function(){
 				});*/
 				//window.open('https://10.133.166.28:3000/api/obtenerCertificado?email='+usuarioLogin.email+'&password='+usuarioLogin.contrasenia);
 				$('#imgChW').attr('class','card-img-top mt-2');
-				mostrarMensajeError('Ha ocurrido un problema','Por favor, intentelo mas tarde');
+				mostrarMensaje('Usuario no valido','Por favor, verificar email y/o contraseña','error');
 			}
 		});
 		/*
@@ -182,7 +165,7 @@ $('#password').keyup(function(event){
 		if($('#passwordRepetir').val() == $('#password').val()){
 			//$('#matchPassword').html('');
 			$('#matchPassword').attr('style','color:green');
-			$('#matchPassword').html('Coinciden');
+			$('#matchPassword').html('Match');
 		}else{
 			if($('#passwordRepetir').val() != ''){
 				//$('#matchPassword').html('');
@@ -245,82 +228,31 @@ function comprobarPassword(password) {
 	}
 }
 
-function mostrarMensajeError(titulo='', mensaje='') {
-	Swal.fire({
-		title: titulo,
-		text: mensaje,
-		type: 'error',
-		confirmButtonColor: '#3085d6',
-		confirmButtonText: 'Aceptar'
-	});
-}
-
-function mostrarMensajeWarning(titulo='', mensaje='') {
-	Swal.fire({
-		title: titulo,
-		text: mensaje,
-		type: 'warning',
-		showCancelButton: true,
-		confirmButtonColor: '#3085d6',
-		cancelButtonColor: '#d33',
-		cancelButtonText: 'Cancelar',
-		confirmButtonText: 'Si, continuar!'
-	  }).then((result) => {
-		if (result.value) {
-			confirmarUsuario();
-		}
-	});
-}
-
-function mostrarMensajeSuccess(titulo='', mensaje='') {
-	Swal.fire({
-		title: titulo,
-		text: mensaje,
-		type: 'success',
-		confirmButtonText: 'Aceptar'
-	}).then((result) => {
-		if(result.value){
-			$('#hrefWebPage').click();
-		}
-	});
-}
-
-$('#botonPrueba').click(()=>{
-	/*$.ajax({
-		type: 'POST',
-		url: IP.getIP()+'verificarCertificado',
-		dataType: 'json',
-		async: false,
-		data: {
-			'usuario': '840f374f1824bbb22eb39c67e953f69c2aff64ad24cf45076c6446f3588b98e9'
-		},
-		success: function(data){
-			alert('Success: '+data.status);
-			if(data.status == 1){
-				console.log('Certificado (Hash)');
-				console.log(data.certificado);
+function mostrarMensaje(titulo='', mensaje='', tipo='') {
+	if(tipo == 'warning'){
+		Swal.fire({
+			title: titulo,
+			text: mensaje,
+			type: tipo,
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			cancelButtonText: 'Cancelar',
+			confirmButtonText: 'Si, continuar!'
+		  }).then((result) => {
+			if (result.value) {
+				confirmarUsuario();
 			}
-		},
-		error: function(data){
-			alert('Error: '+data.status);
-		}
-	});*/
-	$.ajax({
-		type: 'POST',
-		url: IP.getIP()+'Localidades/obtenerPrueba',
-		dataType: 'json',
-		async: false,
-		data: {
-			codigoPostalReq: '07600'
-		},
-		success: function(data){
-			console.log(data);
-		},
-		error: function(data){
-			
-		}
-	});
-});
+		});
+	}else{
+		Swal.fire({
+			title: titulo,
+			text: mensaje,
+			type: tipo,
+			confirmButtonText: 'Aceptar'
+		});
+	}
+}
 
 $('#pRevocarCertificado').click(() => {
 

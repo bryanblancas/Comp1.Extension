@@ -2,7 +2,7 @@
 /********** Variables globales *************/
 var btnActivar = true;
 var statusCertificado = false;
-var IP = new IPClase();
+var IP = 'https://25.7.11.142:3000/api/';
 /*******************************************/
 
 $(document).ready(function() {
@@ -34,7 +34,7 @@ $(document).ready(function() {
 
 $('#btnAviso').click(function(){
 	//chrome.storage.local.set({statusCertConection: true});
-	window.open(IP.getIP()+'Aviso');
+	window.open(IP+'Aviso');
 });
 
 $('#btnActivar').click(function(){
@@ -59,11 +59,9 @@ $('#btnIniciarSesion').click(function(){
 
 $('#btnCerrarSesion').click(function(){
 	chrome.storage.local.set({cert: null});
-
 	$('#btnCerrarSesion').attr('style','display:none');
 	$('#btnIniciarSesion').attr('style','display:inline-block');
 	//$('#btnIniciarSesion').click();	
-	
 	Swal.fire({
 		text: 'Se ha cerrado sesión exitosamente',
 		width: 200,

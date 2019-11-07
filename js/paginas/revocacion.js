@@ -3,7 +3,7 @@
 /***************************************/
 
 var usuarioLogin = {email: '', contrasenia: ''};
-var IP = new IPClase();
+var IP = 'https://25.7.11.142:3000/api/';
 
 /***************************************/
 /******* Final Variables globales ******/
@@ -38,61 +38,67 @@ $('#hrefSignup').click(function(){
 	});	
 });*/
 
-$(document).ready(function(){
-	chrome.storage.local.get(['cert'],function(result){
-		if(result.cert != null){
-			//Existe un certificado
-			$('#hrefSignup,#hrefSignin').attr('style','display:none');
-			$('#btnRevocar,#email,#password').attr('disabled','disabled');
-		}else{
-			//No existe un certificado
-			$('#hrefSignup,#hrefSignin').attr('style','cursor:pointer');
-		}
-	});	
-});
-
 $('#btnRevocar').click(function(){	
 	if(comprobarEmail($('#email').val()) == false){
-		mostrarMensajeError('Email incorrecto','El formato de email no es valido');
+		mostrarMensaje('Email incorrecto','El formato de email no es valido','error');
 	}
 	else if(comprobarPassword($('#password').val()) == false){
-		mostrarMensajeError('Contraseña incorrecta','El formato de la contraseña no es valido');
+		mostrarMensaje('Contraseña incorrecta','El formato de la contraseña no es valido','error');
 	}
 	else{
         usuarioLogin.email = $('#email').val();
         usuarioLogin.contrasenia = $('#password').val();
         var hash = CryptoJS.SHA256($('#password').val()).toString();
         usuarioLogin.contrasenia = hash;
-		mostrarMensajeWarning('¿Esta seguro que desea revocar su certificado?','Este proceso no podrá revertirse');
-		//mensajeConfirmacion();
+		mensajeConfirmacion();
 	}
 });
 
 function mensajeConfirmacion() {
-	$.ajax({
-		type: 'POST',
-		url: IP.getIP()+'revocarCertificado',
-		dataType: 'json',
-		data: {
-			'email': usuarioLogin.email,
-			'password': usuarioLogin.contrasenia
-		},
-		beforeSend: function(){
-			$('#imgChW').attr('class','card-img-top mt-2 rotate');
-		},
-	}).done(function(data){
-		console.log(data);
-		if(data.status == 0){
-			$('#imgChW').attr('class','card-img-top mt-2');
-			mostrarMensajeError('Usuario no encontrado','Por favor, ingrese sus datos correctamente');
-		}else if(data.status == 1){
-			$('#imgChW').attr('class','card-img-top mt-2');
-			mostrarMensajeSuccess('Se ha revocado certificado','Se ha generado un nuevo certificado, porfavor inicie sesión de nuevo');
-		}	
-	}).fail(function(data){
-		//console.log(data);
-		$('#imgChW').attr('class','card-img-top mt-2');
-		mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
+	Swal.fire({
+		title: '¿Esta seguro que desea revocar su certificado?',
+		text: "Este proceso no podrá revertirse",
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Si, revocar certificado'
+	}).then((result) => {
+		if (result.value) {
+			$.ajax({
+				type: 'POST',
+				url: IP+'revocarCertificado',
+				dataType: 'json',
+				data: {
+					'email': usuarioLogin.email,
+					'password': usuarioLogin.contrasenia
+				},
+				beforeSend: function(){
+					$('#imgChW').attr('class','card-img-top mt-2 rotate');
+				},
+			}).done(function(data){
+				console.log(data);
+				if(data.status == 0){
+					$('#imgChW').attr('class','card-img-top mt-2');
+					mostrarMensaje('Usuario no valido','Por favor, ingrese sus credenciales correctas','error');
+				}else if(data.status == 1){
+					$('#imgChW').attr('class','card-img-top mt-2');
+					Swal.fire({
+						title: 'Se ha revocado certificado',
+						text: "Se ha generado un nuevo certificado, porfavor inicie sesión de nuevo",
+						type: 'success',
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'Continuar'
+					}).then((result) => {
+						$('#hrefSignin').click();
+					})
+				}	
+			}).fail(function(data){
+				//console.log(data);
+				$('#imgChW').attr('class','card-img-top mt-2');
+				mostrarMensaje('Ah ocurrido un error', 'Por favor intentelo mas tarde','error');
+			});
+		}
 	});
 }
 
@@ -150,43 +156,30 @@ function comprobarPassword(password) {
 	}
 }
 
-function mostrarMensajeError(titulo='', mensaje='') {
-	Swal.fire({
-		title: titulo,
-		text: mensaje,
-		type: 'error',
-		confirmButtonColor: '#3085d6',
-		confirmButtonText: 'Aceptar'
-	});
-}
-
-function mostrarMensajeWarning(titulo='', mensaje='') {
-	Swal.fire({
-		title: titulo,
-		text: mensaje,
-		type: 'warning',
-		showCancelButton: true,
-		confirmButtonColor: '#3085d6',
-		cancelButtonColor: '#d33',
-		cancelButtonText: 'Cancelar',
-		confirmButtonText: 'Si, continuar!'
-	  }).then((result) => {
-		if (result.value) {
-			mensajeConfirmacion();
-		}
-	});
-}
-
-function mostrarMensajeSuccess(titulo='', mensaje='') {
-	Swal.fire({
-		title: titulo,
-		text: mensaje,
-		type: 'success',
-		confirmButtonColor: '#3085d6',
-		confirmButtonText: 'Continuar'
-	}).then((result) => {
-		$('#hrefSignin').click();
-	})
+function mostrarMensaje(titulo='', mensaje='', tipo='') {
+	if(tipo == 'warning'){
+		Swal.fire({
+			title: titulo,
+			text: mensaje,
+			type: tipo,
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			cancelButtonText: 'Cancelar',
+			confirmButtonText: 'Si, continuar!'
+		  }).then((result) => {
+			if (result.value) {
+				confirmarUsuario();
+			}
+		});
+	}else{
+		Swal.fire({
+			title: titulo,
+			text: mensaje,
+			type: tipo,
+			confirmButtonText: 'Aceptar'
+		});
+	}
 }
 
 

@@ -20,7 +20,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a id="hrefWebPage" class="navbar-brand" href="webpage.html"><img src="../img/logo_Ch_W.svg" height="55px" width="55px" style="margin-right: 5%; margin-left:5%"><strong>Chaffing and Winnowing</strong></a>
+        <a class="navbar-brand" href="webpage.html"><img src="../img/logo_Ch_W.svg" height="55px" width="55px" style="margin-right: 5%; margin-left:5%"><strong>Chaffing and Winnowing</strong></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -29,8 +29,8 @@
                 <li class="nav-item">
                     <a class="nav-link navElements" id="hrefSignin" style="cursor: pointer">Iniciar Sesión</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link navElements" id="hrefSignup" style="cursor: pointer">Registrarse</a>
+                <li class="nav-item"></li>
+                <a class="nav-link navElements" id="hrefSignup" style="cursor: pointer">Registrarse</a>
                 </li>
             </ul>
         </div>
@@ -39,17 +39,19 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-7">
-                    <div class="card mt-4 text-center" style="height: 100%">
+                    <div class="card mt-4 text-center">
                         <div class="card-body">
-                            <h2 id="tituloImagen" class="card-title"><strong>¿Cómo funciona?</strong></h2>
-                            <div id="container" class="card">
-                                <img src="../img/ArquitecturaSistema.png" alt="Arquitectura del Sistema">
+                            <div class="content">
+                                <h2 class="card-title"><strong>¿Cómo funciona?</strong></h2>
+                                <div class="card">
+                                    <img src="../img/ArquitecturaSistema.png" alt="Arquitectura del Sistema" height="439px" margin="auto">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-5">
-                    <div class="card mt-4" style="height: 100%">
+                    <div class="card mt-4">
                         <img class="card-img-top mt-2" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 39%; height: 39%; margin:auto">
                         <div class="card-body">
                             <div class="form-group">
@@ -71,7 +73,7 @@
                                     </div>
                                 </div> 
                                 <div class="row">
-                                    <div id="revocarCertificadoDiv" class="col-md-6">
+                                    <div class="col-md-6">
                                         <div style="cursor: pointer; display:inline-block">
                                             <p id="pRevocarCertificado">Revocar certificado</p>
                                         </div>
@@ -84,7 +86,6 @@
                                     </div>--->
                                 </div>                               
                                 <button id="login" type="button" class="btn btn-primary btn-block mt-4 btn-lg">Iniciar Sesión</button>
-                                <!---<button id="botonPrueba" type="button" class="btn btn-primary btn-block mt-4 btn-lg">botonPrueba</button>--->
                             </div>
                         </div>
                     </div>
@@ -115,7 +116,6 @@
     </div>
 
     <!--Script-->
-    <script src="../js/paginas/IPClase.js"></script>
     <script src="../js/paginas/webpage.js"></script>
     <script type="../background.js"></script>
 </body>

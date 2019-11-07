@@ -9,14 +9,12 @@
     <script src="../js/jQuery/jquery-3.4.1.min.js"></script>
     <script src="../js/bootstrap/bootstrap-4.3.1.min.js"></script>
     <script src="../js/SweetAlert/sweetAlert.min.js"></script>
-    <script src="../js/Select2/select2.js"></script>
     <!--- CSS --->
     <link rel="stylesheet" href="../css/webpage.css">
     <link rel="stylesheet" href="../css/signup.css">
     <link rel="stylesheet" href="../css/estilos.css">
     <link rel="stylesheet" href="../css/bootstrap/bootstrap-4.3.1.min.css">
     <link rel="stylesheet" href="../css/sweetAlert.min.css">
-    <link rel="stylesheet" href="../css/select2.css">
     <!---CryptoJs--->
     <script src="../js/CryptoJs/CryptoJs.js"></script>
     <script src="../js/CryptoJs/sha256.js"></script>
@@ -39,170 +37,46 @@
             </ul>
         </div>
     </nav>
-    <div class="col-md-12">
-        <!-- Nav tabs -->
-        <ul id="tabs" class="nav nav-tabs" role="tablist" style="display: none">
-            <li role="presentation" class="active"><a href="#usuario" role="tab" data-toggle="tab">Datos de Usuario</a></li>
-            &nbsp&nbsp&nbsp
-            <li role="presentation"><a href="#certificado" role="tab" data-toggle="tab">Datos de Certificado</a></li>
-        </ul>
-
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane fade show active" id="usuario">
-                <div class="col-md-4" style="margin:auto">
-                    <div class="card mt-4">
-                        <img class="card-img-top mt-2" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 25%; height: 25%; margin:auto">
-                        <div class="card-body">
-                            <div class="form-group">
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Ingrese nombre de usuario:</strong>&nbsp;<img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalAyudaNombreUsuario" style="cursor: pointer">&nbsp;<span id="regexUsername"></span>
-                                    </div>
-                                    <input type="text" id="username" name="username" placeholder="Usuario123" class="form-control" value="" required>
-                                </div>
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Ingrese email:</strong>&nbsp;<span id="regexEmail"></span>
-                                    </div>
-                                    <input type="email" id="email" name="email" placeholder="ejemplo@ejemplo.com" class="form-control" value="" required>
-                                </div>
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Ingrese contraseña:</strong>&nbsp;<img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalAyudaPassword" style="cursor: pointer">&nbsp;<span id="regexPassword"></span>
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <input type="password" class="form-control" id="password" name="password" placeholder="password" class="form-control" value="" required>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text" id="basic-addon2"><img src="../img/eye.svg" id="imgEye" style="width: 20px; height: 20px;  cursor: pointer"/></span>
-                                        </div>
-                                    </div>
-                                </div>    
-                                <div style="margin-bottom: 10%">
-                                    <div class="card-text">
-                                        <strong>Repetir contraseña:</strong>&nbsp;<span id="matchPassword"></span>
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <input type="password" class="form-control" id="passwordRepetir" name="passwordRepetir" placeholder="password" class="form-control" value="" required>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text" id="basic-addon2"><img src="../img/eye.svg" id="imgEyeRepetir" style="width: 20px; height: 20px;  cursor: pointer"/></span>
-                                        </div>
-                                    </div>
-                                </div>                                
-                                <button id="btnContinuar" type="button" class="btn btn-primary btn-block mt-4">Continuar</button>
+    <div class="col-md-4" style="margin:auto">
+        <div class="card mt-4">
+            <img class="card-img-top mt-2" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 25%; height: 25%; margin:auto">
+            <div class="card-body">
+                <div class="form-group">
+                    <div style="margin-bottom: 5%">
+                        <div class="card-text">
+                            <strong>Ingrese nombre de usuario:</strong>&nbsp;<img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalAyudaNombreUsuario" style="cursor: pointer">&nbsp;<span id="regexUsername"></span>
+                        </div>
+                        <input type="text" id="username" name="username" placeholder="Usuario123" class="form-control" value="" required>
+                    </div>
+                    <div style="margin-bottom: 5%">
+                        <div class="card-text">
+                            <strong>Ingrese email:</strong>&nbsp;<span id="regexEmail"></span>
+                        </div>
+                        <input type="email" id="email" name="email" placeholder="ejemplo@ejemplo.com" class="form-control" value="" required>
+                    </div>
+                    <div style="margin-bottom: 5%">
+                        <div class="card-text">
+                            <strong>Ingrese contraseña:</strong>&nbsp;<img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalAyudaPassword" style="cursor: pointer">&nbsp;<span id="regexPassword"></span>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="password" class="form-control" value="" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="basic-addon2"><img src="../img/eye.svg" id="imgEye" style="width: 20px; height: 20px;  cursor: pointer"/></span>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div role="tabpanel" class="tab-pane fade" id="certificado">
-                <div class="col-md-4" style="margin:auto">
-                    <div class="card mt-4">
-                        <img class="card-img-top mt-2" id="imgChWCertificado" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 25%; height: 25%; margin:auto">
-                        <div class="card-body">
-                            <div style="text-align: center"><strong>La siguiente información nos ayudará a la creación de su certificado</strong></div>
-                            <div class="form-group">
-                                <div style="margin-top: 5%; margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Codigo postal:</strong>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-9">
-                                            <input type="text" id="InputCP" name="InputCP" placeholder="Código Postal" class="form-control" value="" required>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button id="btnBuscarCP" type="button" class="btn btn-secondary btn-block">Buscar</button>
-                                        </div>
-                                    </div>
-                                </div> 
-                                <hr/>
-                                <div id="divLocalidad" style="display:none">
-                                    <div style="margin-bottom: 5%">
-                                        <div class="card-text">
-                                            <strong>Estado:</strong>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <input type="text" id="InputEstado" name="InputEstado" placeholder="" class="form-control" value="" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style="margin-bottom: 5%">
-                                        <div class="card-text">
-                                            <strong>Municipio:</strong>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <input type="text" id="InputMunicipio" name="InputMunicipio" placeholder="" class="form-control" value="" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style="margin-bottom: 5%">
-                                        <div class="card-text">
-                                            <strong>Colonia:</strong>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <select id="selectColonia" style="width: 100%">
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style="margin-bottom: 5%">
-                                        <div class="card-text">
-                                            <strong>Calle y Numero:</strong>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <input type="text" id="InputCalle" name="InputCalle" class="form-control" value="" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr/>
-                                    <div class="card-text">
-                                        <div class="row">
-                                            <div class="col-md-10">
-                                                Opcional
-                                            </div>
-                                            <div class="col-md-1" id="imgMostrarOpAvanzadasAbajo">
-                                                <img src="../img/flechaAbajo.png" alt="Opciones avanzadas" title="Opciones avanzadas" width="15px" height="15px" style="cursor: pointer">
-                                            </div>
-                                            <div class="col-md-1 d-md-none" id="imgMostrarOpAvanzadasArriba">
-                                                <img src="../img/flechaArriba.png" alt="Opciones avanzadas" title="Opciones avanzadas" width="15px" height="15px" style="cursor: pointer">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="OpcionesAvanzadas" style="display:none">
-                                        <div style="margin-bottom: 5%">
-                                            <div class="card-text">
-                                                <strong>Nombre de su organización:</strong>
-                                            </div>
-                                            <input type="organizacion" id="organizacion" name="organizacion" placeholder="Instituto Politécnico Nacional" class="form-control" value="" required>
-                                        </div>
-                                        <div style="margin-bottom: 5%">
-                                            <div class="card-text">
-                                                <strong>Nombre de su organización abreviado:</strong>
-                                            </div>
-                                            <input type="organizacionAbrev" id="organizacionAbrev" name="organizacionAbrev" placeholder="IPN" class="form-control" value="" required>
-                                        </div>
-                                        <div style="margin-bottom: 5%">
-                                            <div class="card-text">
-                                                <strong>Nombre de su dominio:</strong>
-                                            </div>
-                                            <input type="dominio" id="dominio" name="dominio" placeholder="ejemplo.com" class="form-control" value="" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <button id="btnRegresar" type="button" class="btn btn-secondary btn-block mt-4">Atrás</button>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <button id="btnSignup" type="button" class="btn btn-primary btn-block mt-4">Crear Usuario</button>
-                                    </div>
-                                </div>
+                    </div>    
+                    <div style="margin-bottom: 10%">
+                        <div class="card-text">
+                            <strong>Repetir contraseña:</strong>&nbsp;<span id="matchPassword"></span>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control" id="passwordRepetir" name="passwordRepetir" placeholder="password" class="form-control" value="" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="basic-addon2"><img src="../img/eye.svg" id="imgEyeRepetir" style="width: 20px; height: 20px;  cursor: pointer"/></span>
                             </div>
                         </div>
-                    </div>
+                    </div>                                
+                    <button id="btnSignup" type="button" class="btn btn-primary btn-block mt-4">Crear Usuario</button>
                 </div>
             </div>
         </div>
@@ -260,34 +134,7 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="modalDatosCertificados" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">Contraseña</h5>
-            </div>
-            <div class="modal-body">
-                <div class="card border-0">
-                    <strong>Por favor ingrese los siguientes datos: </strong>
-                    <div class="ml-5">
-                        <ul>
-                            <li>Una letra minuscula</li>
-                            <li>Una letra mayuscula</li>
-                            <li>Un numero</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-        </div>
-    </div>
-
     <!--Script-->
-    <script src="../js/paginas/IPClase.js"></script>
     <script src="../js/paginas/signup.js"></script>
     <script type="../background.js"></script>
 </body>
