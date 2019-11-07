@@ -33,7 +33,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 			}
 		}
 	},
-	{urls: ["*://localhost/login"]},
+	{urls: ["*://10.100.77.152/login"]},
 	["blocking", "requestHeaders"]
 );
 
