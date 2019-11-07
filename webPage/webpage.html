@@ -18,74 +18,87 @@
     <script src="../js/CryptoJs/CryptoJs.js"></script>
     <script src="../js/CryptoJs/sha256.js"></script>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a id="hrefWebPage" class="navbar-brand" href="webpage.html"><img src="../img/logo_Ch_W.svg" height="55px" width="55px" style="margin-right: 5%; margin-left:5%"><strong>Chaffing and Winnowing</strong></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link navElements" id="hrefSignin" style="cursor: pointer">Iniciar Sesión</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link navElements" id="hrefSignup" style="cursor: pointer">Registrarse</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <div class="card  border-0" style="width: 90%; margin: auto;">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-7">
-                    <div class="card mt-4 text-center" style="height: 100%">
-                        <div class="card-body">
-                            <h2 id="tituloImagen" class="card-title"><strong>¿Cómo funciona?</strong></h2>
-                            <div id="container" class="card">
-                                <img src="../img/ArquitecturaSistema.png" alt="Arquitectura del Sistema">
+<body style="display:none">
+    <div id="sinCertificado">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a id="hrefWebPage" class="navbar-brand" href="webpage.html"><img src="../img/logo_Ch_W.svg" height="55px" width="55px" style="margin-right: 5%; margin-left:5%"><strong>Chaffing and Winnowing</strong></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link navElements" id="hrefSignin" style="cursor: pointer">Iniciar Sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navElements" id="hrefSignup" style="cursor: pointer">Registrarse</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="card  border-0" style="width: 90%; margin: auto;">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="card mt-4 text-center" style="height: 100%">
+                            <div class="card-body">
+                                <h2 id="tituloImagen" class="card-title"><strong>¿Cómo funciona?</strong></h2>
+                                <div id="container" class="card">
+                                    <img src="../img/ArquitecturaSistema.png" alt="Arquitectura del Sistema">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card mt-4" style="height: 100%">
+                            <img class="card-img-top mt-2" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 39%; height: 39%; margin:auto">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div style="margin-bottom: 5%">
+                                        <div class="card-text">
+                                            <strong>Ingrese email:</strong>&nbsp;<span id="regexEmail"></span>
+                                        </div>
+                                        <input type="email" id="email" name="email" placeholder="ejemplo@ejemplo.com" class="form-control" value="" required>
+                                    </div>
+                                    <div style="margin-bottom: 5%">
+                                        <div class="card-text">
+                                            <strong>Ingrese contraseña:</strong>&nbsp;<span id="regexPassword"></span>
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <input type="password" class="form-control" id="password" name="password" placeholder="password" class="form-control" value="" required>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" id="basic-addon2"><img src="../img/eye.svg" id="imgEye" style="width: 20px; height: 20px; cursor: pointer"/></span>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    <div class="row">
+                                        <div id="revocarCertificadoDiv" class="col-md-6">
+                                            <div style="cursor: pointer; display:inline-block">
+                                                <p id="pRevocarCertificado">Revocar certificado</p>
+                                            </div>
+                                            <img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalRevocarCertificado" style="cursor: pointer">
+                                        </div>
+                                    </div>                               
+                                    <button id="login" type="button" class="btn btn-primary btn-block mt-4 btn-lg">Iniciar Sesión</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-5">
-                    <div class="card mt-4" style="height: 100%">
-                        <img class="card-img-top mt-2" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 39%; height: 39%; margin:auto">
-                        <div class="card-body">
-                            <div class="form-group">
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Ingrese email:</strong>&nbsp;<span id="regexEmail"></span>
-                                    </div>
-                                    <input type="email" id="email" name="email" placeholder="ejemplo@ejemplo.com" class="form-control" value="" required>
-                                </div>
-                                <div style="margin-bottom: 5%">
-                                    <div class="card-text">
-                                        <strong>Ingrese contraseña:</strong>&nbsp;<span id="regexPassword"></span>
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <input type="password" class="form-control" id="password" name="password" placeholder="password" class="form-control" value="" required>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text" id="basic-addon2"><img src="../img/eye.svg" id="imgEye" style="width: 20px; height: 20px; cursor: pointer"/></span>
-                                        </div>
-                                    </div>
-                                </div> 
-                                <div class="row">
-                                    <div id="revocarCertificadoDiv" class="col-md-6">
-                                        <div style="cursor: pointer; display:inline-block">
-                                            <p id="pRevocarCertificado">Revocar certificado</p>
-                                        </div>
-                                        <img src="../img/interrogacion.png" alt="Ayuda" title="Ayuda" width="15px" height="15px" data-toggle="modal" data-target="#modalRevocarCertificado" style="cursor: pointer">
-                                    </div>
-                                    <!---<div class="col-md-6" style="text-align: right">
-                                        <div style="cursor: pointer; display:inline-block">
-                                            <p id="pPassOlvidado">Olvidé la contraseña</p>
-                                        </div>
-                                    </div>--->
-                                </div>                               
-                                <button id="login" type="button" class="btn btn-primary btn-block mt-4 btn-lg">Iniciar Sesión</button>
-                                <!---<button id="botonPrueba" type="button" class="btn btn-primary btn-block mt-4 btn-lg">botonPrueba</button>--->
-                            </div>
+            </div>
+        </div>
+    </div>
+    <div id="conCertificado" style="display: none">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade show active" id="usuario">
+                <div class="col-md-4" style="margin:auto">
+                    <div class="card mt-4">
+                        <img class="card-img-top mt-2" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 25%; height: 25%; margin:auto">
+                        <div class="card-body" style="text-align: center">
+                            <h2>
+                                ¡Gracias por iniciar sesión!
+                            </h2>
+                            <button class="cerrarVentana btn btn-primary btn-block mt-4 btn-lg">Cerrar</button>
                         </div>
                     </div>
                 </div>
