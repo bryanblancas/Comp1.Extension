@@ -2,8 +2,20 @@
 /****** Inicio Variables globales ******/
 /***************************************/
 
-var nuevoUsuario = {username: '', email: '', contrasenia: ''};
-var IP = 'https://25.7.11.142:3000/api/';
+var nuevoUsuario = {
+	username: '', 
+	email: '', 
+	contrasenia: '',
+	ciudad: '',
+	estado: '',
+	localidad: '',
+	codigoPostal: '',
+	direccion: '',
+	organizacionNombre: 'null',
+	organizacionAbreviado: 'null',
+	dominio: 'null'
+};
+var IP = new IPClase();
 
 /***************************************/
 /******* Final Variables globales ******/
@@ -37,25 +49,131 @@ $('#hrefSignup').click(function(){
 	});	
 });*/
 
-$('#btnSignup').click(function(){
+$(document).ready(function(){
+	$('#selectColonia').select2();
+	$('#selectColonia').html('<option value="0" selected>Sin Seleccionar</option>');
+	$('#selectColonia').prop('disabled','disabled');
+	$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').prop('disabled','disabled');
+	$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').val('Sin Seleccionar');
+
+	chrome.storage.local.get(['cert'],function(result){
+		if(result.cert != null){
+			//Existe un certificado
+			$('#hrefSignup,#hrefSignin').attr('style','display:none');
+			$('#email,#password,#username,#passwordRepetir,#btnContinuar').attr('disabled','disabled');
+		}else{
+			//No existe un certificado
+			$('#hrefSignup,#hrefSignin').attr('style','cursor:pointer');
+		}
+	});	
+	
+});
+
+$('#btnBuscarCP').on('click', function() {
+	//$('#selectColonia').html('<option value="0" selected>Sin Seleccionar</option>');
+	//$('#selectColonia').prop('disabled','disabled');
+	//$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').prop('disabled','disabled');
+	//$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').val('Sin Seleccionar');
+	$.ajax({
+		type: 'POST',
+		url: IP.getIP()+'Localidades/obtenerDatos',
+		dataType: 'json',
+		data:{
+			codigoPostalReq: $('#InputCP').val()
+		},
+		beforeSend: function(){
+			console.log('Entro');
+			$('#imgChWCertificado').attr('class','card-img-top mt-2 rotate');
+		},
+	}).done(function(datos){
+		datos = datos.datos;
+		console.log(datos);
+		if(datos.estado.length != 0){
+			$('#selectColonia, #InputCalle').removeAttr('disabled');
+			$('#InputCalle').val('');
+			$('#InputEstado').val(datos.estado);
+			$('#InputMunicipio').val(datos.municipio);
+			var colonias = datos.colonias;
+			for(var i=0;i<colonias.length;i++){
+				$('#selectColonia').append('<option value="'+colonias[i]+'">'+colonias[i]+'</option>');
+			}
+			$('#selectColonia').val(0);
+			$('#selectColonia').trigger('change');
+			$('#selectColonia option[value=0]').prop('disabled','disabled');
+			$('#divLocalidad').attr('style','display:inline');
+			$('#imgChWCertificado').attr('class','card-img-top mt-2');
+		}else{
+			$('#selectColonia').html('<option value="0" selected>Sin Seleccionar</option>');
+			$('#selectColonia').prop('disabled','disabled');
+			$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').prop('disabled','disabled');
+			$('#InputEstado,#InputMunicipio,#InputColonia,#InputCalle').val('Sin Seleccionar');
+			$('#imgChWCertificado').attr('class','card-img-top mt-2');
+			mostrarMensajeError('Código Postal invalido', 'Por favor ingrese un código postal valido');	
+		}
+	}).fail(function(xhr, status, error){
+		$('#imgChWCertificado').attr('class','card-img-top mt-2');
+		mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
+	});
+});
+
+$('#btnContinuar').click(function(){
 	if(comprobarUserName($('#username').val()) == false){
-		mostrarMensaje('Nombre de usuario incorrecto','El formato del nombre de usuario no es valido','error');
+		mostrarMensajeError('Nombre de usuario incorrecto','El formato del nombre de usuario no es valido');
 	}
 	else if(comprobarEmail($('#email').val()) == false){
-		mostrarMensaje('Email incorrecto','El formato de email no es valido','error');
+		mostrarMensajeError('Email incorrecto','El formato de email no es valido');
 	}
 	else if(comprobarPassword($('#password').val()) == false){
-		mostrarMensaje('Contraseña incorrecta','El formato de la contraseña no es valido','error');
+		mostrarMensajeError('Contraseña incorrecta','El formato de la contraseña no es valido');
 	}
 	else if($('#password').val() != $('#passwordRepetir').val()){
-		mostrarMensaje('Contraseñas no validas','Las contraseñas introducidas no coinciden','error');
+		mostrarMensajeError('Contraseñas incorrectas','Las contraseñas introducidas no coinciden');
+	}else{
+		mostrarMensajeWarning('¿Desea continuar?','');
+	}
+});
+
+$('#btnRegresar').click(function(){
+	$('#usuario').attr('class','tab-pane fade show active');
+	$('#certificado').attr('class','tab-pane fade');
+	$('#imgMostrarOpAvanzadasArriba').click();
+});
+
+$('#btnSignup').click(function(){
+	if($('#InputCP').val().length == 0){
+		mostrarMensajeError('','Porfavor ingrese un código postal');
+	}else if($('#InputEstado').val().length == 0){
+		mostrarMensajeError('','Porfavor ingrese un Estado');
+	}else if($('#InputMunicipio').val().length == 0){
+		mostrarMensajeError('','Porfavor ingrese un Municipio');
+	}else if($('#selectColonia').val() == null || $('#selectColonia').val() == 0){
+		mostrarMensajeError('','Porfavor seleccione una Colonia');
+	}else if($('#InputCalle').val().length == 0){
+		mostrarMensajeError('','Porfavor ingrese una Calle y Número');
 	}else{
 		nuevoUsuario.username = $('#username').val();
 		nuevoUsuario.email = $('#email').val();
 		nuevoUsuario.contrasenia = $('#password').val();
 		var hash = CryptoJS.SHA256($('#password').val()).toString();
 		nuevoUsuario.contrasenia = hash;
-		mostrarMensaje('¿Está seguro?','Se registrará usuario actual','warning');
+
+		nuevoUsuario.ciudad = 'MX';
+		nuevoUsuario.estado = $('#InputEstado').val();
+		nuevoUsuario.localidad = $('#InputMunicipio').val();
+		nuevoUsuario.codigoPostal = $('#InputCP').val();
+		nuevoUsuario.direccion = $('#InputCalle').val() + ' ' + $('#selectColonia').val();
+
+		if($('#organizacion').val().length != 0){
+			nuevoUsuario.organizacionNombre = $('#organizacion').val();
+		}
+		if($('#organizacionAbrev').val().length != 0){
+			nuevoUsuario.organizacionAbreviado = $('#organizacionAbrev').val();
+		}
+		if($('#dominio').val().length != 0){
+			nuevoUsuario.dominio = $('#dominio').val();
+		}
+
+		mostrarMensajeConfirmacion('¿Desea continuar?','Se registrará usuario actual');
 	}
 });
 
@@ -63,12 +181,20 @@ function confirmarUsuario() {
 	console.log(nuevoUsuario);
 	$.ajax({
 		type: 'POST',
-		url: IP+'guardarUsuario',
+		url: IP.getIP()+'guardarUsuario',
 		dataType: 'json',
 		data: {
 			'username': nuevoUsuario.username,
 			'email': nuevoUsuario.email,
-			'password': nuevoUsuario.contrasenia
+			'password': nuevoUsuario.contrasenia,
+			'ciudad': nuevoUsuario.ciudad,
+			'estado': nuevoUsuario.estado,
+			'localidad': nuevoUsuario.localidad,
+			'codigoPostal': nuevoUsuario.codigoPostal,
+			'direccion': nuevoUsuario.direccion,
+			'organizacionNombre': nuevoUsuario.organizacionNombre,
+			'organizacionAbreviado': nuevoUsuario.organizacionAbreviado,
+			'dominio': nuevoUsuario.dominio
 		},
 		beforeSend: function(){
 			$('#imgChW').attr('class','card-img-top mt-2 rotate');
@@ -77,15 +203,15 @@ function confirmarUsuario() {
 		console.log(data);
 		if(data.status == 0){
 			$('#imgChW').attr('class','card-img-top mt-2');
-			mostrarMensaje('Usuario no creado',data.email,'error');	
+			mostrarMensajeError('Usuario no registrado','Ya existe una cuenta asociada al correo: '+data.email);	
 		}else{
 			$('#imgChW').attr('class','card-img-top mt-2');
 			//mostrarMensaje('Nuevo Usuario Creado', 'Email: '+data.email,'success');
 			/*Se guarda en Storage*/
 			//chrome.storage.local.set({cert: null});
 			Swal.fire({
-				title: 'Nuevo Usuario Creado',
-				text: "Email: "+data.email,
+				title: 'Nuevo Usuario Registrado',
+				text: "Se ha creado nuevo usuario con correo email: "+data.email,
 				type: 'success',
 				confirmButtonColor: '#3085d6',				
 				confirmButtonText: 'Iniciar Sesión'
@@ -97,7 +223,7 @@ function confirmarUsuario() {
 		}
 	}).fail(function(xhr, status, error){
 		$('#imgChW').attr('class','card-img-top mt-2');
-		mostrarMensaje('Ah ocurrido un error', 'Por favor intentelo mas tarde','error');
+		mostrarMensajeError('Ah ocurrido un error', 'Por favor intentelo mas tarde');
 	});
 }
 
@@ -111,11 +237,11 @@ $('#passwordRepetir').keyup(function(){
 		if($('#passwordRepetir').val() == $('#password').val()){
 			//$('#matchPassword').html('');
 			$('#matchPassword').attr('style','color:green');
-			$('#matchPassword').html('Match');
+			$('#matchPassword').html('Coinciden');
 		}else{
 			//$('#matchPassword').html('');
 			$('#matchPassword').attr('style','color:red');
-			$('#matchPassword').html('Diferente');
+			$('#matchPassword').html('Diferentes');
 		}
 	}
 });
@@ -130,12 +256,12 @@ $('#password').keyup(function(){
 		if($('#passwordRepetir').val() == $('#password').val()){
 			//$('#matchPassword').html('');
 			$('#matchPassword').attr('style','color:green');
-			$('#matchPassword').html('Match');
+			$('#matchPassword').html('Coinciden');
 		}else{
 			if($('#passwordRepetir').val() != ''){
 				//$('#matchPassword').html('');
 				$('#matchPassword').attr('style','color:red');
-				$('#matchPassword').html('Diferente');
+				$('#matchPassword').html('Diferentes');
 			}
 		}
 	}
@@ -226,32 +352,75 @@ function comprobarPassword(password) {
 	}
 }
 
-function mostrarMensaje(titulo='', mensaje='', tipo='') {
-	if(tipo == 'warning'){
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			cancelButtonText: 'Cancelar',
-			confirmButtonText: 'Si, continuar!'
-		  }).then((result) => {
-			if (result.value) {
-				confirmarUsuario();
-			}
-		});
-	}else{
-		Swal.fire({
-			title: titulo,
-			text: mensaje,
-			type: tipo,
-			confirmButtonText: 'Aceptar'
-		});
-	}
+function mostrarMensajeError(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'error',
+		confirmButtonColor: '#3085d6',
+		confirmButtonText: 'Aceptar'
+	});
 }
 
+function mostrarMensajeWarning(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		cancelButtonText: 'Cancelar',
+		confirmButtonText: 'Si, continuar!'
+	  }).then((result) => {
+		if (result.value) {
+			$('#usuario').attr('class','tab-pane fade');
+			$('#certificado').attr('class','tab-pane fade show active');
+		}
+	});
+}
+
+function mostrarMensajeSuccess(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'success',
+		confirmButtonText: 'Aceptar'
+	}).then((result) => {
+		if(result.value){
+			$('#hrefWebPage').click();
+		}
+	});
+}
+
+function mostrarMensajeConfirmacion(titulo='', mensaje='') {
+	Swal.fire({
+		title: titulo,
+		text: mensaje,
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		cancelButtonText: 'Cancelar',
+		confirmButtonText: 'Si, continuar!'
+		}).then((result) => {
+		if (result.value) {
+			confirmarUsuario();
+		}
+	});
+}
+
+$('#imgMostrarOpAvanzadasAbajo').click(function(){
+	$('#OpcionesAvanzadas').removeAttr('style');
+	$('#imgMostrarOpAvanzadasArriba').attr('class','col-md-1');
+	$('#imgMostrarOpAvanzadasAbajo').attr('class','d-md-none');
+});
+
+$('#imgMostrarOpAvanzadasArriba').click(function(){
+	$('#OpcionesAvanzadas').attr('style','display:none');
+	$('#imgMostrarOpAvanzadasAbajo').attr('class','col-md-1');
+	$('#imgMostrarOpAvanzadasArriba').attr('class','d-md-none');
+});
 
 /************* Final ****************/
 /********** Signup html *************/
