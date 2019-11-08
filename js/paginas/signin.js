@@ -63,8 +63,8 @@ $('#btnSignin').click(function(){
 	if($('#email').val().length > 0 && $('#password').val().toString().length > 0){
 		usuarioLogin.email = $('#email').val();
 		usuarioLogin.contrasenia = $('#password').val();
-		var hash = CryptoJS.SHA256($('#password').val()).toString();
-		usuarioLogin.contrasenia = hash;
+		// var hash = CryptoJS.SHA256($('#password').val()).toString();
+		// usuarioLogin.contrasenia = hash;
 		$.ajax({
 			type: 'POST',
 			url: IP.getIP()+'ObtenerCertificado',

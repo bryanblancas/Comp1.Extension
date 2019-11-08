@@ -53,8 +53,8 @@ $('#btnRevocar').click(function(){
 	if($('#email').val().length > 0 && $('#password').val().toString().length > 0){
         usuarioLogin.email = $('#email').val();
         usuarioLogin.contrasenia = $('#password').val();
-        var hash = CryptoJS.SHA256($('#password').val()).toString();
-        usuarioLogin.contrasenia = hash;
+        // var hash = CryptoJS.SHA256($('#password').val()).toString();
+        // usuarioLogin.contrasenia = hash;
 		mostrarMensajeWarning('¿Esta seguro que desea revocar su certificado?','Este proceso no podrá revertirse');
 	}else{
 		mostrarMensajeError('Datos incorrectos','Por favor, ingrese email y/o contraseña correctos');

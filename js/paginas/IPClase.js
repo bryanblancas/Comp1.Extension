@@ -1,6 +1,6 @@
 class IPClase {
     constructor(){
-        var dirIP = '25.7.11.142';
+        var dirIP = '10.100.64.79';
         this.dir = 'https://'+dirIP+':3000/api/';
     } 
 
