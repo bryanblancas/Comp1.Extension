@@ -33,7 +33,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 			}
 		}
 	},
-	{urls: ["*://10.100.77.152/login"]},
+	{urls: ["*://10.0.0.8/login"]},
 	["blocking", "requestHeaders"]
 );
 
@@ -71,7 +71,7 @@ function chaffingProcess(certificadoCharArray, headers) {
 			cert.push(certificadoCharArray[i])
 	}
 
-	let rtn = getPattern(950, 1050);
+	let rtn = getPattern(550, 650);
 	let pattern = rtn[0];
 	let ones = rtn[1];
 	// console.log(pattern)
@@ -89,7 +89,8 @@ function chaffingProcess(certificadoCharArray, headers) {
 function getPattern(low, high){
 	let diff = high - low;
 	let ones =  Math.floor(Math.random() * diff) + low; 
-	let	size = 245*8;
+	let len_pattern = 150;
+	let	size = len_pattern * 8;
 	
 	let pattern = []
 	for(let i = 0; i < size; i++)
@@ -115,10 +116,16 @@ function makeChaffing(pattern, certificadoCharArray, ones){
 	// certificadoCharArray = ['a', 'b', '\n']
 	// ones = 2
 
-	let len_cert = certificadoCharArray.length;
+	let len_cert = certificadoCharArray.length
 	let len_pattern = pattern.length
-	let rep = Math.ceil(len_cert/ones);
-	
+	let rep = Math.ceil(len_cert/ones)
+
+	console.log("IMPRESIONES DE makeChaffing()")
+	console.log("Longitud pattern: "+len_pattern)
+	console.log("Longitud certificado: "+len_cert)
+	console.log("Número de unos: "+ones)
+	console.log("Repeticiones de patrón: "+len_cert+"/"+ones+"="+rep)
+
 	let chaffing = []
 
 	let cont_cert = 0
@@ -128,22 +135,22 @@ function makeChaffing(pattern, certificadoCharArray, ones){
 		for(let cont_pattern = 0; cont_pattern < len_pattern; cont_pattern++){
 
 			if(flag == false){
-				chaffing.push(fakeChar());
+				chaffing.push(fakeChar())
 				continue
 			}
 
 			if(pattern[cont_pattern] == 1){
-				chaffing.push(certificadoCharArray[cont_cert]);
-				cont_cert++;
+				chaffing.push(certificadoCharArray[cont_cert])
+				cont_cert++
 				if(cont_cert >= len_cert)
 					flag = false;
 			}
 			else
-				chaffing.push(fakeChar());
+				chaffing.push(fakeChar())
 		}
 	}
 
-	return chaffing;
+	return chaffing
 }
 
 
@@ -171,6 +178,7 @@ function fakeChar(){
 
 // Función que libera la nueva petición con el chaffing y pattern dados
 function freeRequest(headers, chaffing, pattern, len_cert){
+	console.log("IMPRESIONES DE freeRequest()")
 
     const url = headers.url;
     chaffing = chaffing.join('');
@@ -179,7 +187,9 @@ function freeRequest(headers, chaffing, pattern, len_cert){
 
     // pattern = text 
     // pattern = "01110100011001010111100001110100"
+    // pattern = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
     pattern = arrayBytesToBites(pattern, 0);
+    console.log("PATTERN BYTES LENGTH: "+pattern.length)
     chaffing = chaffing+" "+len_cert;
 
 
@@ -189,9 +199,9 @@ function freeRequest(headers, chaffing, pattern, len_cert){
 	var pattern_encrypted = encrypt.encrypt(pattern); 
 
 
-	// IMPRESIONES EN PANTALLA
     console.log("DIRECCIÓN: \n"+url)
     console.log("CHAFFING: \n"+chaffing)
+    console.log("CHAFFING LENGTH: \n"+chaffing.length)
     // console.log("PATTERN: \n"+pattern)
     console.log("PATTERN ENCRYPTED: \n"+pattern_encrypted)
 
