@@ -59,10 +59,7 @@ $(document).ready(function(){
 
 $('#btnSignup').click(function(){
 
-	if(comprobarUserName($('#username').val()) == false){
-		mostrarMensajeError('Nombre de usuario incorrecto','El nombre de usuario introducido no es valido');
-	}
-	else if(comprobarEmail($('#email').val()) == false){
+	if(comprobarEmail($('#email').val()) == false){
 		mostrarMensajeError('Email incorrecto','El email introducido no es valido');
 	}
 	else if(comprobarPassword($('#password').val()) == false){

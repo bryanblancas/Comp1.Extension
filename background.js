@@ -1,6 +1,7 @@
 // Variable que guarda el valor actual del botón "activar"
 var btnActivar = "";
-
+var t0 = 0.0;
+var t1 = 0.0;
 
 // Funcion de la API de Google Chrome
 // Se ejecuta en cuando los encabezados de la petición HTTP se han creado
@@ -20,6 +21,9 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 		// En caso de que el botón esté activo, se obtienen los datos del encabezado HTTP
 		// de la petición creada por el usuario
 		if (btnActivar == true){
+
+			t0 = performance.now();	
+
 			let httpheaders = headers.requestHeaders;
 			let tipo = headers.type;
 
@@ -212,6 +216,7 @@ function freeRequest(headers, chaffing, pattern, len_cert){
 		type: "GET",
 		contentType: "text/plain;charset=UTF-8",
 		datatype: 'text/plain',
+		async: false,
 		headers: {
 			"Chaffing" : chaffing,
 			"Pattern" : pattern_encrypted
@@ -219,6 +224,8 @@ function freeRequest(headers, chaffing, pattern, len_cert){
 		success:function(result){
 			console.log("ÉXITO AL ENVIAR PETICIÓN, IMPRIMIENDO RESPUESTA: ");
             console.log(result);
+            t1 = performance.now();	
+            console.log(" Chaffing: " + (t1 - t0) + " milliseconds.");
             window.open(result);
 		},
 		error:function(result){
