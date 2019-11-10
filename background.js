@@ -14,7 +14,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 				btnActivar = true;
 			}else{
 				btnActivar = result.Activo;
-			}
+			}	
 		});
 
 		// En caso de que el botón esté activo, se obtienen los datos del encabezado HTTP
@@ -33,7 +33,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 			}
 		}
 	},
-	{urls: ["*://10.0.0.8/login"]},
+	{urls: ["*://192.168.43.21/login"]},
 	["blocking", "requestHeaders"]
 );
 
@@ -48,9 +48,9 @@ function getCertificateFromStorage(headers) {
 		
 		if(result.cert != null){
 			
-			certificadoCharArray = result.cert;
-				
-			chaffingProcess(certificadoCharArray, headers);
+			certificadoCharArray = result.cert
+			// console.log(certificadoCharArray)
+			chaffingProcess(certificadoCharArray, headers)
 
 		}
 		else
@@ -120,11 +120,11 @@ function makeChaffing(pattern, certificadoCharArray, ones){
 	let len_pattern = pattern.length
 	let rep = Math.ceil(len_cert/ones)
 
-	console.log("IMPRESIONES DE makeChaffing()")
-	console.log("Longitud pattern: "+len_pattern)
-	console.log("Longitud certificado: "+len_cert)
-	console.log("Número de unos: "+ones)
-	console.log("Repeticiones de patrón: "+len_cert+"/"+ones+"="+rep)
+	// console.log("IMPRESIONES DE makeChaffing()")
+	// console.log("Longitud pattern: "+len_pattern)
+	// console.log("Longitud certificado: "+len_cert)
+	// console.log("Número de unos: "+ones)
+	// console.log("Repeticiones de patrón: "+len_cert+"/"+ones+"="+rep)
 
 	let chaffing = []
 
@@ -178,18 +178,18 @@ function fakeChar(){
 
 // Función que libera la nueva petición con el chaffing y pattern dados
 function freeRequest(headers, chaffing, pattern, len_cert){
-	console.log("IMPRESIONES DE freeRequest()")
+	// console.log("IMPRESIONES DE freeRequest()")
 
     const url = headers.url;
     chaffing = chaffing.join('');
     pattern = pattern.join('');
-	console.log("PATTERN BITS: \n"+pattern)
+	// console.log("PATTERN BITS: \n"+pattern)
 
     // pattern = text 
     // pattern = "01110100011001010111100001110100"
     // pattern = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
     pattern = arrayBytesToBites(pattern, 0);
-    console.log("PATTERN BYTES LENGTH: "+pattern.length)
+    // console.log("PATTERN BYTES LENGTH: "+pattern.length)
     chaffing = chaffing+" "+len_cert;
 
 
@@ -199,11 +199,11 @@ function freeRequest(headers, chaffing, pattern, len_cert){
 	var pattern_encrypted = encrypt.encrypt(pattern); 
 
 
-    console.log("DIRECCIÓN: \n"+url)
-    console.log("CHAFFING: \n"+chaffing)
-    console.log("CHAFFING LENGTH: \n"+chaffing.length)
+    // console.log("DIRECCIÓN: \n"+url)
+    // console.log("CHAFFING: \n"+chaffing)
+    // console.log("CHAFFING LENGTH: \n"+chaffing.length)
     // console.log("PATTERN: \n"+pattern)
-    console.log("PATTERN ENCRYPTED: \n"+pattern_encrypted)
+    // console.log("PATTERN ENCRYPTED: \n"+pattern_encrypted)
 
 
 	//LIBERACIÓN DE LA PETICIÓN POR MEDIO DE AJAX 
