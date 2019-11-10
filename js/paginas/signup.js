@@ -3,7 +3,6 @@
 /***************************************/
 
 var nuevoUsuario = {
-	username: '', 
 	email: '', 
 	contrasenia: ''
 };
@@ -72,7 +71,6 @@ $('#btnSignup').click(function(){
 	else if($('#password').val() != $('#passwordRepetir').val()){
 		mostrarMensajeError('Contraseñas incorrectas','Las contraseñas introducidas no coinciden');
 	}else{
-		nuevoUsuario.username = $('#username').val();
 		nuevoUsuario.email = $('#email').val();
 		nuevoUsuario.contrasenia = $('#password').val();
 		// var hash = CryptoJS.SHA256($('#password').val()).toString();
@@ -87,7 +85,6 @@ function confirmarUsuario() {
 		url: IP.getIP()+'guardarUsuario',
 		dataType: 'json',
 		data: {
-			'username': nuevoUsuario.username,
 			'email': nuevoUsuario.email,
 			'password': nuevoUsuario.contrasenia
 		},
@@ -161,15 +158,6 @@ $('#imgEyeRepetir').click(function(){
 function comprobarEmail(email) {
 	re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	return re.test(email);
-}
-
-function comprobarUserName(username) {
-	regexuser = /^[A-Za-z0-9_]+$/;
-	if( username == null || username.length < 3 || username.length > 20 || !regexuser.test(username)) {
-		return false;
-	}else{
-		return true;
-	}
 }
 
 function comprobarPassword(password) {
