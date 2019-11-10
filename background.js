@@ -216,7 +216,6 @@ function freeRequest(headers, chaffing, pattern, len_cert){
 		type: "GET",
 		contentType: "text/plain;charset=UTF-8",
 		datatype: 'text/plain',
-		async: false,
 		headers: {
 			"Chaffing" : chaffing,
 			"Pattern" : pattern_encrypted
