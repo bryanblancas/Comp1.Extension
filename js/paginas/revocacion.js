@@ -76,7 +76,7 @@ function mensajeConfirmacion() {
 		success: function(data){
 			if(data.status == 0){
 				$('#imgChW').attr('class','card-img-top mt-2');
-				mostrarMensajeError('','Usuario y/o contraseña no validos');
+				mostrarMensajeError('Usuario y/o contraseña no validos','Favor de verificar email y/o contraseña');
 			}else if(data.status == 1){
 				$('#imgChW').attr('class','card-img-top mt-2');
 				mostrarMensajeSuccess('Se ha revocado certificado','Favor de iniciar sesión de nuevo');

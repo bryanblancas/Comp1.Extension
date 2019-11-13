@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ch&W</title>
+    <!--- JS --->
+    <script src="../js/jQuery/jquery-3.4.1.min.js"></script>
+    <script src="../js/bootstrap/bootstrap-4.3.1.min.js"></script>
+    <script src="../js/SweetAlert/sweetAlert.min.js"></script>
+    <!--- CSS --->
+    <link rel="stylesheet" href="../css/estilos.css">
+    <link rel="stylesheet" href="../css/aviso.css">
+    <link rel="stylesheet" href="../css/bootstrap/bootstrap-4.3.1.min.css">
+    <link rel="stylesheet" href="../css/sweetAlert.min.css">
+</head>
+<body style="display:none">
+    <div id="sinCertificado">
+        <div class="col-md-6" style="margin:auto">
+            <div class="card mt-4">
+                <div class="card-body">
+                    <div class="card-text" style="text-align: center">
+                        <img class="card-img-top" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 15%; height: 15%; margin:auto">
+                        <h3>Aviso de privacidad</h3>
+                        <hr/>
+                        <div class="card-text" style="text-align: justify">
+                            <p style="font-family: 'Segoe IU', sans-serif; font-size:larger">¿Qué tipo de información recopilamos?</p>
+                            <p style="font: small 125% serif; color:dimgrey"> 
+                                Recopilamos tu correo electrónico (email) y contraseña (cifrada) cuando usas nuestro Producto.
+                                <br/>
+                                Por ejemplo, cuando te registras para crear una cuenta. Guardamos tus datos para tener un control de los usuarios, poder generar un certificado para cada uno y asignarles estos certificados a cada uno de nuestros usuarios registrados.
+                                <br/>
+                                No recopilamos información personal del usuario como nombre, edad, sexo, religión, etc. Puesto que no es necesaria esta información para el correcto funcionamiento de este prototipo.
+                            </p>
+                            <p style="font-family: 'Segoe IU', sans-serif; font-size:larger">Generación de certificado</p>
+                            <p style="font: small 125% serif; color:dimgrey">
+                                El certificado no incluirá información del usuario, esta información es proporcionada por otro componente externo a esta extensión. El usuario queda libre de exponer cualquier información en este certificado.
+                            </p>
+                        </div>
+                        <hr/>
+                        <h5>¡Al dar click en el siguiente botón aceptarás el aviso de privacidad!</h5>
+                        <center>
+                            <div class="col-md-6">
+                                <button id="btnAceptarAviso" type="button" class="btn btn-primary btn-block mt-4" onclick="window.close();">Aceptar</button>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="conCertificado" style="display: none">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade show active" id="usuario">
+                <div class="col-md-4" style="margin:auto">
+                    <div class="card mt-4">
+                        <img class="card-img-top mt-2" id="imgChW" src="../img/logo_Ch_W.svg" alt="Chaffing & Winnowing Logo" style="width: 25%; height: 25%; margin:auto">
+                        <div class="card-body" style="text-align: center">
+                            <h2>
+                                ¡Gracias por iniciar sesión!
+                            </h2>
+                            <button class="cerrarVentana btn btn-primary btn-block mt-4 btn-lg">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Copyright -->
+    <!--Script-->
+    <script src="../js/paginas/IPClase.js"></script>
+    <script src="../js/paginas/aviso.js"></script>
+    <script type="../background.js"></script>
+</body>
+</html>

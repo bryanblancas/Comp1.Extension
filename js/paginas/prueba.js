@@ -29,7 +29,8 @@ $(document).ready(function() {
 });
 
 $('#btnAviso').click(function(){
-	window.open(IP.getIP()+'Aviso');
+	chrome.tabs.create({url:"../webPage/Aviso.html"});
+	//window.open(IP.getIP()+'Aviso');
 });
 
 $('#btnActivar').click(function(){
