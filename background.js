@@ -1,14 +1,33 @@
 // Variable que guarda el valor actual del botón "activar"
-var btnActivar = "";
+var btnActivar = true
 var t0 = 0.0;
 var t1 = 0.0;
+
+// Función del API de Google Chrome que obtiene el valor guardado en el Storage
+chrome.storage.local.get(['Activo'],function(result){
+	if(result.Activo == null){
+		btnActivar = true;
+	}else{
+		btnActivar = result.Activo;
+	}	
+});
+
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+	// Función del API de Google Chrome que obtiene el valor guardado en el Storage
+	chrome.storage.local.get(['Activo'],function(result){
+		if(result.Activo == null){
+			btnActivar = true;
+		}else{
+			btnActivar = result.Activo;
+		}	
+	});
+});
 
 // Funcion de la API de Google Chrome
 // Se ejecuta en cuando los encabezados de la petición HTTP se han creado
 chrome.webRequest.onBeforeSendHeaders.addListener(
-	
 	function(headers){
-
+		
 		// Función del API de Google Chrome que obtiene el valor guardado en el Storage
 		chrome.storage.local.get(['Activo'],function(result){
 			if(result.Activo == null){
@@ -37,7 +56,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 			}
 		}
 	},
-	{urls: ["*://10.100.75.242/login"]},
+	{urls: ["*://10.100.0.1/"]},
 	["blocking", "requestHeaders"]
 );
 
