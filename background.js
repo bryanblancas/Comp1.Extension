@@ -28,15 +28,6 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 chrome.webRequest.onBeforeSendHeaders.addListener(
 	function(headers){
 		
-		// Función del API de Google Chrome que obtiene el valor guardado en el Storage
-		chrome.storage.local.get(['Activo'],function(result){
-			if(result.Activo == null){
-				btnActivar = true;
-			}else{
-				btnActivar = result.Activo;
-			}	
-		});
-
 		// En caso de que el botón esté activo, se obtienen los datos del encabezado HTTP
 		// de la petición creada por el usuario
 		if (btnActivar == true){
