@@ -57,7 +57,6 @@ function getCertificateFromStorage(headers) {
 	
 	let certificadoCharArray = [];
 
-	// Función del API de Google Chrome que obtiene el valor guardado en el Storage
 	chrome.storage.local.get(['cert'],function(result){
 		
 		if(result.cert != null){
