@@ -250,11 +250,7 @@ function arrayBytesToBites(array, patron){
 			charCreado = charCreado | 1; 
 		count ++;
 	}
-
-	//ÚLTIMO CHAR CREADO
-	////console.log("char creado: "+charCreado.toString(2)+"   "+charCreado);
 	stringInBites += String.fromCharCode(charCreado);
-	////console.log("----> "+stringInBites+" "+stringInBites.length);
 
 	return stringInBites;
 }
