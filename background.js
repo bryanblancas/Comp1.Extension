@@ -27,9 +27,6 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 // Se ejecuta en cuando los encabezados de la petición HTTP se han creado
 chrome.webRequest.onBeforeSendHeaders.addListener(
 	function(headers){
-		
-		// En caso de que el botón esté activo, se obtienen los datos del encabezado HTTP
-		// de la petición creada por el usuario
 		if (btnActivar == true){
 
 			t0 = performance.now();	
@@ -37,7 +34,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 			let httpheaders = headers.requestHeaders;
 			let tipo = headers.type;
 
-			// Filtro para sólo obtener la petición tipo "main_frame"
 			if(tipo.includes("main_frame")){
 				
 				getCertificateFromStorage(headers);
