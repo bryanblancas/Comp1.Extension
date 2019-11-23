@@ -47,7 +47,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 			}
 		}
 	},
-	{urls: ["*://10.100.0.1/"]},
+	{urls: ["*://192.168.43.21/login"]},
 	["blocking", "requestHeaders"]
 );
 
